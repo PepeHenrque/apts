@@ -46,3 +46,8 @@ next-env.d.ts
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+
+# tauri (app de Windows — gerado no GitHub Actions)
+/src-tauri/target/
+/src-tauri/gen/
+/src-tauri/icons/
