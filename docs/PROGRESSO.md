@@ -3,7 +3,7 @@
 > Atualize este arquivo ao fim de cada fase. Ele deve bastar para qualquer pessoa ou IA continuar o
 > trabalho sem o histórico do chat. Pedido completo: `docs/PROMPT-ORIGINAL.md`.
 
-Última atualização: 14/11/2026 — Fase 3 (código) concluída.
+Última atualização: 14/11/2026 — Fase 6 (código) concluída.
 
 ## Ordem de execução combinada com o dono (14/11/2026)
 
@@ -135,6 +135,20 @@ configuráveis e marcados "A CONFIRMAR"; **nunca** colocar atribuição de IA em
   `apts:estado:v1:antes-de-entrar`).
 - Geocodificação usa também o cache do banco quando `SUPABASE_SERVICE_ROLE_KEY` existe.
 
+## Fase 6 — Gemini (código pronto; falta o dono criar a chave)
+
+- **Passo a passo para o dono: `docs/GEMINI.md`.** Sem `GEMINI_API_KEY`, os botões de IA não
+  aparecem (testado no E2E).
+- `src/lib/ia/gemini.ts`: chamada REST ao `generateContent` (sem SDK), modelo em `GEMINI_MODELO`
+  (padrão `gemini-flash-latest`), erro de cota (429) tratado, limpeza de CPF/e-mail do texto.
+- `src/lib/ia/anuncio.ts`: prompt, `responseSchema` e validação Zod tolerante (campo inválido é
+  descartado, não quebra). `src/lib/ia/anonimizar.ts`: situação SEM nomes ("Pessoa 1"), validada
+  também no servidor (rejeita rótulos que não sejam "Pessoa N").
+- Rotas: `/api/ia/status`, `/api/ia/anuncio`, `/api/ia/explicar` — limite por IP em memória
+  (`src/lib/ia/limitador.ts`), CORS só para as origens do app de Windows (`src/lib/api.ts`).
+- Interface: `src/components/ia/Ia.tsx` (`BotaoPreencherIA` no formulário de imóvel e
+  `ExplicarSituacao` no Diagnóstico).
+
 ## Decisões tomadas
 
 - **Juros nominais ÷ 12** para a taxa mensal (como a Caixa divulga).
@@ -148,12 +162,9 @@ configuráveis e marcados "A CONFIRMAR"; **nunca** colocar atribuição de IA em
 - Dados da família = 1 documento JSON por família (simples; o formato é validado pelo Zod no app). Concorrência: versão otimista; em conflito, vale a versão do banco e o usuário é avisado.
 - Convites não enviam e-mail próprio (exigiria service key/SMTP): a pessoa é avisada pelo WhatsApp e entra com o e-mail convidado.
 
-## Próximos passos (Fase 6 — Gemini)
+## Próximos passos (Fase 7 — Vercel e revisão geral)
 
-1. Branch `feat/f6-gemini`.
-2. Rota `/api/ia/anuncio` (servidor): recebe SÓ o texto do anúncio, chama o Gemini (nível
-   gratuito) pedindo JSON, valida com Zod, rate limit por usuário/IP, erro de cota amigável.
-3. Botão "Preencher com IA" no formulário de imóvel, visível só se a chave existir
-   (`/api/ia/status`).
-4. Opcional: "Explicar minha situação" só com números anonimizados.
-5. `docs/GEMINI.md` com o passo a passo da chave no Google AI Studio.
+1. Branch `chore/f7-revisao-deploy`.
+2. `docs/VERCEL.md`: passo a passo de importar o repositório, variáveis e domínio.
+3. Revisão: acessibilidade (rótulos, contraste, foco, alvos de toque), textos, segurança
+   (segredos, RLS, validação no servidor, cabeçalhos), README final.

@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { CampoMarcar, CampoSelecao } from "@/components/campos";
+import { BotaoPreencherIA } from "@/components/ia/Ia";
 import { CartaoImovel, SeloOrcamento } from "@/components/imoveis/CartaoImovel";
 import { FormImovel } from "@/components/imoveis/FormImovel";
 import {
@@ -66,6 +67,7 @@ export default function PaginaImoveis() {
         <FormImovel
           inicial={editando}
           aoCancelar={() => setEditando(null)}
+          extraTexto={(texto, aplicar) => <BotaoPreencherIA texto={texto} aoPreencher={aplicar} />}
           previa={(preco) =>
             referencia && (
               <div className="mb-4">

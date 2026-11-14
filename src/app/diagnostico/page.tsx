@@ -1,6 +1,7 @@
 "use client";
 
 import { CartaoSemaforo } from "@/components/calculo";
+import { ExplicarSituacao } from "@/components/ia/Ia";
 import { AvisoCalculo, BotaoLink, Cartao, Carregando, Selo, TituloPagina } from "@/components/ui";
 import { useDiagnostico, useEstadoFamilia } from "@/lib/armazenamento/hooks";
 import type { Gravidade } from "@/lib/dominio/diagnostico";
@@ -24,6 +25,7 @@ export default function PaginaDiagnostico() {
       </TituloPagina>
       <AvisoCalculo />
       <CartaoSemaforo diagnostico={d} />
+      <ExplicarSituacao estado={estado} diagnostico={d} />
 
       {d.recusas.total > 0 && (
         <Cartao titulo="O que dizem as recusas">

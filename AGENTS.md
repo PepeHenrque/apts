@@ -96,6 +96,7 @@ supabase/testes/          Testes de RLS rodados no CI (Postgres + auth simulado)
 docs/
   PROGRESSO.md            Estado do projeto — atualizar ao fim de cada fase
   SUPABASE.md             Passo a passo para criar o projeto Supabase
+  GEMINI.md               Passo a passo da chave do Gemini (opcional)
   PROMPT-ORIGINAL.md      Pedido completo do projeto
 .github/workflows/ci.yml  CI: lint, format, typecheck, unitários, build, E2E
 ```
@@ -132,7 +133,7 @@ docs/
 | F6 Mapa (pronto)                       | `src/app/mapa`, `src/components/mapa/`, `src/lib/geo/`, `src/app/api/geocodificar`                   | 4    |
 | F8 Checklists (pronto)                 | `src/app/guias`, `src/lib/dominio/checklists.ts`                                                     | 5    |
 | F10 Tela inicial / PWA (pronto)        | `src/app/page.tsx`, `src/app/manifest.ts`, `public/sw.js`, `src/components/Pwa.tsx`                  | 5    |
-| F7 Gemini                              | _a criar_                                                                                            | 6    |
+| F7 Gemini (código pronto)              | `src/lib/ia/`, `src/app/api/ia/`, `src/components/ia/Ia.tsx`                                         | 6    |
 
 (Atualize esta tabela sempre que criar uma funcionalidade.)
 
