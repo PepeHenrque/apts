@@ -3,24 +3,24 @@
 > Atualize este arquivo ao fim de cada fase. Ele deve bastar para qualquer pessoa ou IA continuar o
 > trabalho sem o histórico do chat. Pedido completo: `docs/PROMPT-ORIGINAL.md`.
 
-Última atualização: 14/11/2026 — Fase 5 concluída.
+Última atualização: 14/11/2026 — Fase 3 (código) concluída.
 
 ## Ordem de execução combinada com o dono (14/11/2026)
 
 O dono pediu para executar tudo em sequência, sem parar entre fases, fazendo primeiro o que não
 depende de contas externas:
 
-| Ordem | Fase | Conteúdo                                                                     | Situação     |
-| ----- | ---- | ---------------------------------------------------------------------------- | ------------ |
-| 1     | 0    | Setup: Next.js, TS, Tailwind, Vitest, ESLint/Prettier, CI, docs              | Concluída    |
-| 2     | 1    | Motor de cálculo (`regras-mcmv.ts` + funções + testes)                       | Concluída    |
-| 3     | 2    | F1, F2, F3, F11, F12 com localStorage                                        | Concluída    |
-| 4     | 4    | F4 busca guiada, F5 imóveis salvos, F6 mapa (localStorage)                   | Concluída    |
-| 5     | 5    | F8 checklists, F10 tela inicial, PWA instalável (Windows e celular)          | Concluída    |
-| 6     | 3    | Supabase + login + família + RLS (F9) — código pronto + passo a passo        | Não iniciada |
-| 7     | 6    | Gemini (F7) — código pronto + passo a passo da chave                         | Não iniciada |
-| 8     | 7    | Deploy Vercel + revisão geral — passo a passo                                | Não iniciada |
-| 9     | 8    | Executável Windows (Tauri) gerado no GitHub Actions e publicado numa Release | Não iniciada |
+| Ordem | Fase | Conteúdo                                                                     | Situação                                         |
+| ----- | ---- | ---------------------------------------------------------------------------- | ------------------------------------------------ |
+| 1     | 0    | Setup: Next.js, TS, Tailwind, Vitest, ESLint/Prettier, CI, docs              | Concluída                                        |
+| 2     | 1    | Motor de cálculo (`regras-mcmv.ts` + funções + testes)                       | Concluída                                        |
+| 3     | 2    | F1, F2, F3, F11, F12 com localStorage                                        | Concluída                                        |
+| 4     | 4    | F4 busca guiada, F5 imóveis salvos, F6 mapa (localStorage)                   | Concluída                                        |
+| 5     | 5    | F8 checklists, F10 tela inicial, PWA instalável (Windows e celular)          | Concluída                                        |
+| 6     | 3    | Supabase + login + família + RLS (F9) — código pronto + passo a passo        | Código pronto; aguarda o dono (docs/SUPABASE.md) |
+| 7     | 6    | Gemini (F7) — código pronto + passo a passo da chave                         | Não iniciada                                     |
+| 8     | 7    | Deploy Vercel + revisão geral — passo a passo                                | Não iniciada                                     |
+| 9     | 8    | Executável Windows (Tauri) gerado no GitHub Actions e publicado numa Release | Não iniciada                                     |
 
 Regras combinadas: se o CI falhar, investigar e corrigir; valores do MCMV em dúvida ficam
 configuráveis e marcados "A CONFIRMAR"; **nunca** colocar atribuição de IA em commits/PRs/código.
@@ -113,6 +113,28 @@ configuráveis e marcados "A CONFIRMAR"; **nunca** colocar atribuição de IA em
 - `src/app/error.tsx` e `not-found.tsx`; cabeçalhos de segurança em `next.config.ts`.
 - `EXPORTAR_ESTATICO=1` já gera `output: "export"` (para o app de Windows).
 
+## Fase 3 — Supabase, login e família (código pronto; falta o dono criar o projeto)
+
+- **Passo a passo para o dono: `docs/SUPABASE.md`.** Sem as variáveis, o app segue em modo
+  "só neste aparelho" (testado no E2E).
+- Banco: `supabase/migrations/20261114000000_inicial.sql` — `familias` (documento `dados` jsonb +
+  `versao`), `membros` (dono/membro, 1 família por usuário), `convites` (por e-mail),
+  `cache_geocodificacao` (só service key). Funções `criar_familia`, `aceitar_convite`,
+  `salvar_dados` (erro "conflito" se a versão estiver desatualizada), `sair_da_familia`. RLS em
+  todas as tabelas; Realtime ligado em `familias`. Migration idempotente.
+- **Testes de RLS no CI** (job "Banco"): Postgres 16 + simulação do `auth` do Supabase
+  (`supabase/testes/auth-simulado.sql`) + `supabase/testes/rls.sql` (isolamento entre famílias,
+  convites, versão/conflito, anônimo sem acesso, cache fechado).
+- App: `src/lib/supabase/cliente.ts` (navegador, chave pública, fluxo "implicit" para o link
+  funcionar em outro aparelho), `servidor.ts` (service key, só em rotas de API),
+  `sincronizacao.ts` (sessão, carregar família, enviar com debounce de 800 ms, conflito,
+  tempo real, reenvio ao voltar a internet). Telas `/entrar` (link mágico **ou código de 6
+  dígitos** — necessário no PWA e no app de Windows) e `/familia` (criar, convites com aviso por
+  WhatsApp, membros, sair). Ao criar a família, os dados do aparelho sobem (migração do
+  localStorage); ao aceitar convite, os dados locais são trocados pelos da família (cópia em
+  `apts:estado:v1:antes-de-entrar`).
+- Geocodificação usa também o cache do banco quando `SUPABASE_SERVICE_ROLE_KEY` existe.
+
 ## Decisões tomadas
 
 - **Juros nominais ÷ 12** para a taxa mensal (como a Caixa divulga).
@@ -123,13 +145,15 @@ configuráveis e marcados "A CONFIRMAR"; **nunca** colocar atribuição de IA em
 - `cacheComponents` DESLIGADO (as telas são componentes de cliente; facilita a exportação estática do app de Windows).
 - `@types/node` 24 (Vitest 5 exige ≥ 22); fonte do sistema (sem Google Fonts).
 - Build e E2E não rodam localmente (notebook fraco) — o CI faz.
+- Dados da família = 1 documento JSON por família (simples; o formato é validado pelo Zod no app). Concorrência: versão otimista; em conflito, vale a versão do banco e o usuário é avisado.
+- Convites não enviam e-mail próprio (exigiria service key/SMTP): a pessoa é avisada pelo WhatsApp e entra com o e-mail convidado.
 
-## Próximos passos (Fase 3 — Supabase, login e família)
+## Próximos passos (Fase 6 — Gemini)
 
-1. Branch `feat/f3-supabase-login-familia`.
-2. Migrations em `supabase/migrations/`: familias (dados jsonb), membros, convites, cache de
-   geocodificação; RLS por família.
-3. Login por link mágico (`/entrar`), criar família / aceitar convite (`/familia`).
-4. Sincronizador plugado em `loja.ts`: envia o estado para o Supabase e recebe mudanças.
-5. Migrar os dados do localStorage para a família no primeiro login.
-6. App continua funcionando sem Supabase configurado (modo só neste aparelho).
+1. Branch `feat/f6-gemini`.
+2. Rota `/api/ia/anuncio` (servidor): recebe SÓ o texto do anúncio, chama o Gemini (nível
+   gratuito) pedindo JSON, valida com Zod, rate limit por usuário/IP, erro de cota amigável.
+3. Botão "Preencher com IA" no formulário de imóvel, visível só se a chave existir
+   (`/api/ia/status`).
+4. Opcional: "Explicar minha situação" só com números anonimizados.
+5. `docs/GEMINI.md` com o passo a passo da chave no Google AI Studio.
