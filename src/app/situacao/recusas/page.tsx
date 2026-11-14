@@ -24,6 +24,7 @@ import {
   type Recusa,
 } from "@/lib/dominio/esquemas";
 import { formatarData, formatarMoedaInteira } from "@/lib/formatar";
+import { linkSeguro } from "@/lib/seguranca";
 
 function FormRecusa({
   inicial,
@@ -216,9 +217,9 @@ export default function PaginaRecusas() {
           {r.compradoresIds.length > 0 && (
             <p>Compradores: {r.compradoresIds.map(nomeDe).join(", ")}</p>
           )}
-          {r.imovelLink && (
+          {linkSeguro(r.imovelLink) && (
             <a
-              href={r.imovelLink}
+              href={linkSeguro(r.imovelLink) ?? undefined}
               target="_blank"
               rel="noopener noreferrer"
               className="text-blue-800 underline"

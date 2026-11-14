@@ -9,6 +9,7 @@ import type { ImovelAvaliado } from "@/lib/dominio/imoveis";
 import type { CorOrcamento } from "@/lib/financiamento/orcamento";
 import { coordenadasDe, formatarDistancia, linkRotaGoogleMaps } from "@/lib/geo/distancia";
 import { enderecoCompleto } from "@/lib/geo/geocodificar";
+import { linkSeguro } from "@/lib/seguranca";
 import { formatarDataHora, formatarMoeda, formatarMoedaInteira } from "@/lib/formatar";
 
 export const TEXTO_COR: Record<CorOrcamento, string> = {
@@ -150,9 +151,9 @@ export function CartaoImovel({
         </p>
       )}
 
-      {im.link && (
+      {linkSeguro(im.link) && (
         <a
-          href={im.link}
+          href={linkSeguro(im.link) ?? undefined}
           target="_blank"
           rel="noopener noreferrer"
           className="mt-2 inline-block font-semibold text-blue-800 underline"
@@ -164,17 +165,20 @@ export function CartaoImovel({
       {im.fotos.length > 0 && (
         <p className="mt-1">
           Fotos:{" "}
-          {im.fotos.map((f, i) => (
-            <a
-              key={f}
-              href={f}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mr-2 text-blue-800 underline"
-            >
-              foto {i + 1}
-            </a>
-          ))}
+          {im.fotos
+            .map((f) => linkSeguro(f))
+            .filter((f): f is string => f !== null)
+            .map((f, i) => (
+              <a
+                key={f}
+                href={f}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mr-2 text-blue-800 underline"
+              >
+                foto {i + 1}
+              </a>
+            ))}
         </p>
       )}
 

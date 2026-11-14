@@ -80,13 +80,14 @@ src/
     armazenamento/        loja.ts (localStorage + histórico, via useSyncExternalStore), hooks.ts
     datas.ts              Datas "AAAA-MM-DD" sem erro de fuso
     formatar.ts           Formatação de moeda etc.
-e2e/                      Testes Playwright (só CI)
+e2e/                      Testes Playwright (só CI), incluindo acessibilidade com axe
 supabase/migrations/      SQL versionado: tabelas + funções + policies RLS (idempotente)
 supabase/testes/          Testes de RLS rodados no CI (Postgres + auth simulado)
 docs/
   PROGRESSO.md            Estado do projeto — atualizar ao fim de cada fase
   SUPABASE.md             Passo a passo para criar o projeto Supabase
   GEMINI.md               Passo a passo da chave do Gemini (opcional)
+  VERCEL.md               Passo a passo para publicar na Vercel
   PROMPT-ORIGINAL.md      Pedido completo do projeto
 .github/workflows/ci.yml  CI: lint, format, typecheck, unitários, build, E2E
 ```

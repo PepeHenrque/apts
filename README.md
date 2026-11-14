@@ -7,13 +7,44 @@ compradores funciona** e a organizar a busca de imóveis dentro do orçamento.
 > Simulações são estimativas. Não é aconselhamento financeiro. Confirme com a Caixa ou um
 > correspondente bancário.
 
+## O que o app faz
+
+- **Nossa situação** — pessoas, trabalho e renda (com data de fim de contrato), nome sujo e dívidas,
+  FGTS, outras parcelas, recusas de financiamento, dinheiro guardado e imóvel desejado. Tudo
+  editável, com histórico de quem mudou o quê.
+- **Diagnóstico** — semáforo (Pronto / Quase / Ainda não), bloqueios do mais grave ao mais leve e o
+  que fazer em cada um.
+- **Simulador** — todas as combinações de compradores, preço máximo (SAC e Price), prazo pela idade,
+  subsídio, FGTS, "e se…" e parcelas mês a mês.
+- **Imóveis** — salve anúncios colando o texto ou o link e veja na hora se cabe no orçamento, a
+  entrada, a parcela e a distância da casa atual. Mapa com OpenStreetMap.
+- **Buscar nos sites** — links prontos para OLX, Zap, VivaReal, Imóveis Caixa e Facebook, já com o
+  preço máximo.
+- **Repasse** e **Empréstimo para a entrada** — simuladores com os riscos explicados.
+- **Checklists** — documentos para a Caixa, o que conferir no imóvel, limpar o nome e o caminho da
+  Faixa 1 pela prefeitura.
+- **Família** (opcional, Supabase) — login por e-mail sem senha e dados compartilhados em tempo real.
+- **IA** (opcional, Gemini) — preencher anúncio colado e explicar a situação em linguagem simples.
+- **Instalável** no celular e no Windows (PWA), e versão desktop para Windows (veja abaixo).
+
+## Colocar no ar / ligar os serviços
+
+| O quê                         | Passo a passo                          | Obrigatório?              |
+| ----------------------------- | -------------------------------------- | ------------------------- |
+| Publicar na internet (Vercel) | [`docs/VERCEL.md`](docs/VERCEL.md)     | Sim, para usar no celular |
+| Login e dados da família      | [`docs/SUPABASE.md`](docs/SUPABASE.md) | Não                       |
+| IA Gemini                     | [`docs/GEMINI.md`](docs/GEMINI.md)     | Não                       |
+
+Sem Supabase e sem Gemini o app funciona: os dados ficam no aparelho (dá para baixar uma cópia de
+segurança em Mais) e os botões de IA não aparecem.
+
 ## Como rodar no seu computador
 
 Pré-requisito: [Node.js 24](https://nodejs.org/) (ou mais novo).
 
 ```bash
 npm install          # instala as dependências (só na primeira vez ou quando mudar o package.json)
-cp .env.example .env.local   # opcional por enquanto; preencha quando chegar na Fase 3
+cp .env.example .env.local   # opcional: preencha para usar Supabase/Gemini localmente
 npm run dev          # abre em http://localhost:3000
 ```
 
@@ -27,8 +58,8 @@ npm run verificar    # os três acima de uma vez (rode antes de abrir um PR)
 npm run format       # arruma a formatação
 ```
 
-O **build** e os **testes de ponta a ponta (Playwright)** rodam automaticamente no GitHub Actions a
-cada Pull Request — não é preciso rodá-los localmente.
+O **build**, os **testes de ponta a ponta (Playwright)** e os **testes de segurança do banco (RLS)**
+rodam automaticamente no GitHub Actions a cada Pull Request — não é preciso rodá-los localmente.
 
 ## Tecnologias
 
@@ -37,10 +68,12 @@ Leaflet/OpenStreetMap · Gemini (opcional) · Vercel.
 
 ## Documentação
 
-- [`docs/PROGRESSO.md`](docs/PROGRESSO.md) — o que já está pronto e os próximos passos.
+- [`docs/PROGRESSO.md`](docs/PROGRESSO.md) — o que já está pronto, decisões e próximos passos.
 - [`CLAUDE.md`](CLAUDE.md) / [`AGENTS.md`](AGENTS.md) / [`GEMINI.md`](GEMINI.md) — guia para
   assistentes de IA (mesmo conteúdo).
 - [`docs/PROMPT-ORIGINAL.md`](docs/PROMPT-ORIGINAL.md) — pedido completo do projeto.
+- [`src/config/regras-mcmv.ts`](src/config/regras-mcmv.ts) — todas as regras e valores do MCMV
+  (com fontes e itens "A CONFIRMAR").
 
 ## Fluxo de trabalho
 
