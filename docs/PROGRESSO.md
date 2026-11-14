@@ -3,7 +3,7 @@
 > Atualize este arquivo ao fim de cada fase. Ele deve bastar para qualquer pessoa ou IA continuar o
 > trabalho sem o histórico do chat. Pedido completo: `docs/PROMPT-ORIGINAL.md`.
 
-Última atualização: 14/11/2026 — Fase 1 concluída.
+Última atualização: 14/11/2026 — Fase 2 concluída.
 
 ## Ordem de execução combinada com o dono (14/11/2026)
 
@@ -14,7 +14,7 @@ depende de contas externas:
 | ----- | ---- | ---------------------------------------------------------------------------- | ------------ |
 | 1     | 0    | Setup: Next.js, TS, Tailwind, Vitest, ESLint/Prettier, CI, docs              | Concluída    |
 | 2     | 1    | Motor de cálculo (`regras-mcmv.ts` + funções + testes)                       | Concluída    |
-| 3     | 2    | F1, F2, F3, F11, F12 com localStorage                                        | Não iniciada |
+| 3     | 2    | F1, F2, F3, F11, F12 com localStorage                                        | Concluída    |
 | 4     | 4    | F4 busca guiada, F5 imóveis salvos, F6 mapa (localStorage)                   | Não iniciada |
 | 5     | 5    | F8 checklists, F10 tela inicial, PWA instalável (Windows e celular)          | Não iniciada |
 | 6     | 3    | Supabase + login + família + RLS (F9) — código pronto + passo a passo        | Não iniciada |
@@ -61,6 +61,26 @@ configuráveis e marcados "A CONFIRMAR"; **nunca** colocar atribuição de IA em
     renda; Danielle 19, jovem aprendiz R$ 950 até 31/01/2027; 1 recusa de R$ 140 mil).
 - 66 testes Vitest cobrindo todos os casos da seção 7 do prompt.
 
+## Fase 2 — Telas com localStorage (pronto)
+
+- Armazenamento: `src/lib/armazenamento/loja.ts` guarda o `EstadoFamilia` no localStorage
+  (chave `apts:estado:v1`), validado por Zod; dados inválidos são copiados para
+  `apts:estado:v1:corrompido:<data>` e o exemplo é recarregado. Telas leem com
+  `useEstadoFamilia()` (useSyncExternalStore, sincroniza entre abas). Toda alteração passa por
+  `atualizarEstado(descricao, fn)`, que registra no histórico "quem" (nome salvo no aparelho,
+  chave `apts:quem`) e quando. `definirSincronizador()` já existe para a Fase 3 (Supabase).
+- Telas: `/` (resumo provisório), `/situacao` (pessoas com renda, CPF/dívidas, FGTS,
+  compromissos, imóvel), `/situacao/recusas` (contador + gráfico de causas), `/situacao/dinheiro`
+  (quanto falta e meses para juntar), `/situacao/preferencias`, `/situacao/historico`,
+  `/diagnostico` (semáforo, bloqueios com o que fazer e links), `/simulador` (cenários, "e se…",
+  data simulada, tabela SAC/Price), `/repasse` (explicação, simulador, checklist), `/emprestimo`
+  (parcela, antes/depois, comparação com guardar), `/mais` (links, nome do usuário, cópia de
+  segurança JSON), `/imoveis` (provisória).
+- Diagnóstico em `src/lib/dominio/diagnostico.ts` (função pura, testada). Semáforo: "pronto" se
+  há cenário viável sem alertas de gravidade ≥ 2; "quase" se há cenário viável com alertas, ou se
+  o único impedimento é aguardar o score; senão "ainda não".
+- E2E (CI): tela inicial; cadastrar pessoa → diagnóstico "pronto" → simulador → histórico.
+
 ## Decisões tomadas
 
 - **Juros nominais ÷ 12** para a taxa mensal (como a Caixa divulga).
@@ -68,15 +88,17 @@ configuráveis e marcados "A CONFIRMAR"; **nunca** colocar atribuição de IA em
 - **Renda familiar** (define faixa e subsídio) = renda de todos que vão morar, comprovada ou não.
   **Renda para a parcela** = só renda comprovada dos compradores do cenário.
 - Quem já tem imóvel no nome → cenário calculado "fora do MCMV" (juros maiores, sem subsídio).
-- Next 16 com `cacheComponents: true` (padrão do template) — rever na Fase 2.
+- `cacheComponents` DESLIGADO (as telas são componentes de cliente; facilita a exportação estática do app de Windows).
 - `@types/node` 24 (Vitest 5 exige ≥ 22); fonte do sistema (sem Google Fonts).
 - Build e E2E não rodam localmente (notebook fraco) — o CI faz.
 
-## Próximos passos (Fase 2 — telas com localStorage)
+## Próximos passos (Fase 4 — imóveis, busca guiada, mapa)
 
-1. Branch `feat/f2-situacao-diagnostico-simulador`.
-2. Armazenamento local: hook/contexto `useFamilia()` que lê/grava `EstadoFamilia` no localStorage
-   (validado por `lerEstado`), carrega `dadosIniciais()` no 1º uso, registra histórico de mudanças.
-3. Telas: Nossa situação (pessoas, recusas, dinheiro, preferências), Diagnóstico (semáforo +
-   bloqueios + o que fazer), Simulador (cenários, "e se", tabela de parcelas), Repasse, Empréstimo.
-4. Navegação inferior para celular.
+1. Branch `feat/f4-imoveis-busca-mapa`.
+2. `/imoveis`: lista com filtros/ordenação, cor do orçamento (`avaliarImovel` contra o melhor
+   cenário — ou o potencial se nenhum for viável), entrada/parcela estimadas, distância (Haversine)
+   da casa atual e dos pontos importantes, link de rota no Google Maps, marcar como repasse.
+3. Formulário de imóvel (colar link/texto) e edição.
+4. `/busca`: links pré-filtrados (OLX, Zap, VivaReal, Imóveis Caixa, Facebook Marketplace).
+5. `/mapa`: Leaflet + OpenStreetMap; geocodificação via Nominatim (1 req/s, cache).
+6. Navegação: "Imóveis" já está na barra inferior.
