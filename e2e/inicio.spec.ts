@@ -53,3 +53,19 @@ test("cadastrar pessoa → ver diagnóstico → ver cenário no simulador", asyn
   await expect(page.getByText("Adicionou Ana")).toBeVisible();
   await expect(page.getByText('Salvou o imóvel "Apto barato"')).toBeVisible();
 });
+
+test("checklist marcado continua marcado depois de recarregar", async ({ page }) => {
+  await page.goto("/guias");
+  const item = page.getByLabel("RG e CPF (ou CNH) de cada comprador");
+  await item.check();
+  await page.reload();
+  await expect(page.getByLabel("RG e CPF (ou CNH) de cada comprador")).toBeChecked();
+});
+
+test("manifesto do app instalável", async ({ request }) => {
+  const resposta = await request.get("/manifest.webmanifest");
+  expect(resposta.ok()).toBe(true);
+  const manifesto = await resposta.json();
+  expect(manifesto.short_name).toBe("apts");
+  expect(manifesto.icons.length).toBeGreaterThanOrEqual(2);
+});

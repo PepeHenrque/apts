@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { CampoTexto } from "@/components/campos";
+import { InstalarApp } from "@/components/Pwa";
 import { Aviso, Botao, Cartao, TituloPagina, confirmar } from "@/components/ui";
 import { useEstadoFamilia, useQuem } from "@/lib/armazenamento/hooks";
 import { definirQuem, recarregarExemplo, substituirEstado } from "@/lib/armazenamento/loja";
@@ -19,6 +20,11 @@ const LINKS = [
     href: "/situacao",
     titulo: "Nossa situação",
     texto: "Pessoas, rendas, nome, recusas, dinheiro",
+  },
+  {
+    href: "/guias",
+    titulo: "Checklists e guias",
+    texto: "Documentos, conferir o imóvel, limpar o nome, Faixa 1",
   },
   { href: "/repasse", titulo: "Repasse", texto: "Assumir o financiamento de outra pessoa" },
   { href: "/emprestimo", titulo: "Empréstimo para a entrada", texto: "Efeito no financiamento" },
@@ -58,6 +64,10 @@ export default function PaginaMais() {
           ))}
         </ul>
       </nav>
+
+      <Cartao titulo="Instalar o app">
+        <InstalarApp />
+      </Cartao>
 
       <Cartao titulo="Quem está usando este aparelho">
         <form

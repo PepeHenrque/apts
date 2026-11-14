@@ -3,7 +3,7 @@
 > Atualize este arquivo ao fim de cada fase. Ele deve bastar para qualquer pessoa ou IA continuar o
 > trabalho sem o histórico do chat. Pedido completo: `docs/PROMPT-ORIGINAL.md`.
 
-Última atualização: 14/11/2026 — Fase 4 concluída.
+Última atualização: 14/11/2026 — Fase 5 concluída.
 
 ## Ordem de execução combinada com o dono (14/11/2026)
 
@@ -16,7 +16,7 @@ depende de contas externas:
 | 2     | 1    | Motor de cálculo (`regras-mcmv.ts` + funções + testes)                       | Concluída    |
 | 3     | 2    | F1, F2, F3, F11, F12 com localStorage                                        | Concluída    |
 | 4     | 4    | F4 busca guiada, F5 imóveis salvos, F6 mapa (localStorage)                   | Concluída    |
-| 5     | 5    | F8 checklists, F10 tela inicial, PWA instalável (Windows e celular)          | Não iniciada |
+| 5     | 5    | F8 checklists, F10 tela inicial, PWA instalável (Windows e celular)          | Concluída    |
 | 6     | 3    | Supabase + login + família + RLS (F9) — código pronto + passo a passo        | Não iniciada |
 | 7     | 6    | Gemini (F7) — código pronto + passo a passo da chave                         | Não iniciada |
 | 8     | 7    | Deploy Vercel + revisão geral — passo a passo                                | Não iniciada |
@@ -99,6 +99,20 @@ configuráveis e marcados "A CONFIRMAR"; **nunca** colocar atribuição de IA em
   todos").
 - E2E: salvar imóvel barato (verde) e caro (vermelho).
 
+## Fase 5 — Checklists, tela inicial e PWA (pronto)
+
+- `src/lib/dominio/checklists.ts`: documentos (gerais + por tipo de renda de cada comprador),
+  conferir o imóvel, limpar o nome, caminho da Faixa 1 pela prefeitura (com anotações; inclui a
+  reserva de 3% para idosos do Estatuto da Pessoa Idosa), segurança do repasse. Tela `/guias`.
+- Tela inicial: semáforo, preço máximo (hoje e depois de limpar o nome), imóveis que cabem,
+  recusas, próximo passo sugerido, data de atenção e atalhos.
+- PWA: `src/app/manifest.ts`, ícones gerados por `scripts/gerar-icones.mjs` (sem dependências) em
+  `public/icones/` + `src/app/icon.png` e `apple-icon.png`, service worker `public/sw.js` (rede
+  primeiro, cache offline; registrado só em produção e fora do app de Windows), botão
+  "Instalar no aparelho" + instruções (Android, iPhone, Windows) em `/mais`.
+- `src/app/error.tsx` e `not-found.tsx`; cabeçalhos de segurança em `next.config.ts`.
+- `EXPORTAR_ESTATICO=1` já gera `output: "export"` (para o app de Windows).
+
 ## Decisões tomadas
 
 - **Juros nominais ÷ 12** para a taxa mensal (como a Caixa divulga).
@@ -110,11 +124,12 @@ configuráveis e marcados "A CONFIRMAR"; **nunca** colocar atribuição de IA em
 - `@types/node` 24 (Vitest 5 exige ≥ 22); fonte do sistema (sem Google Fonts).
 - Build e E2E não rodam localmente (notebook fraco) — o CI faz.
 
-## Próximos passos (Fase 5 — checklists, tela inicial, PWA)
+## Próximos passos (Fase 3 — Supabase, login e família)
 
-1. Branch `feat/f5-checklists-inicio-pwa`.
-2. `/guias`: checklists (documentos por tipo de renda, conferir o imóvel, limpar o nome, caminho da
-   Faixa 1 pela prefeitura com anotações) usando `ListaVerificacao` e `src/lib/dominio/checklists.ts`.
-3. Tela inicial completa: semáforo, preço máximo, nº de imóveis que cabem, próximo passo.
-4. PWA: `src/app/manifest.ts`, ícones PNG, service worker simples; instalável no Windows e celular.
-5. Estados de carregando/vazio/erro revisados; `error.tsx` global.
+1. Branch `feat/f3-supabase-login-familia`.
+2. Migrations em `supabase/migrations/`: familias (dados jsonb), membros, convites, cache de
+   geocodificação; RLS por família.
+3. Login por link mágico (`/entrar`), criar família / aceitar convite (`/familia`).
+4. Sincronizador plugado em `loja.ts`: envia o estado para o Supabase e recebe mudanças.
+5. Migrar os dados do localStorage para a família no primeiro login.
+6. App continua funcionando sem Supabase configurado (modo só neste aparelho).
