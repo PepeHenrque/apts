@@ -75,9 +75,18 @@ src/
   app/                    Rotas (App Router). layout.tsx tem o aviso fixo de estimativa.
   components/             Componentes de interface reutilizáveis
   config/
-    regras-mcmv.ts        (Fase 1) TODAS as regras/valores do MCMV, com data de referência e fonte
+    regras-mcmv.ts        TODAS as regras/valores do MCMV, com data de referência e fonte
   lib/
-    financiamento/        (Fase 1) Funções PURAS de cálculo + testes *.test.ts ao lado
+    financiamento/        Funções PURAS de cálculo (sem dados da família) + testes ao lado
+      basico.ts           idade, prazo pela idade, faixa, seguro MIP, subsídio, meses p/ juntar
+      sistemas.ts         SAC/Price: valor financiável, 1ª parcela, evolução, parcela de empréstimo
+      capacidade.ts       calcularCenario(): preço máximo + impedimentos + avisos de um grupo
+      orcamento.ts        avaliarImovel() (cor/falta/renda necessária), custo compra, repasse
+    dominio/              Dados da família (o que é salvo) e ponte para o motor
+      esquemas.ts         Esquemas Zod + tipos de TUDO que é salvo (EstadoFamilia)
+      cenarios.ts         pessoa→proponente na data, gerarCenarios(), melhorCenario(), mudanças futuras
+      dados-iniciais.ts   Dados de exemplo (seed) carregados no 1º uso — editáveis no app
+    datas.ts              Datas "AAAA-MM-DD" sem erro de fuso
     formatar.ts           Formatação de moeda etc.
 e2e/                      Testes Playwright (só CI)
 supabase/migrations/      (Fase 3) SQL versionado: tabelas + policies RLS
@@ -105,17 +114,17 @@ docs/
 
 ## Onde está cada funcionalidade
 
-| Funcionalidade                            | Local                                   | Fase |
-| ----------------------------------------- | --------------------------------------- | ---- |
-| Motor de cálculo                          | `src/lib/financiamento/`, `src/config/` | 1    |
-| F1 Nossa situação (contexto editável)     | _a criar_                               | 2    |
-| F2 Diagnóstico                            | _a criar_                               | 2    |
-| F3 Simulador de cenários                  | _a criar_                               | 2    |
-| F11 Repasse / F12 Empréstimo para entrada | _a criar_                               | 2    |
-| F9 Login, família, RLS                    | _a criar_ + `supabase/migrations/`      | 3    |
-| F4 Busca guiada / F5 Imóveis / F6 Mapa    | _a criar_                               | 4    |
-| F8 Checklists / F10 Tela inicial / PWA    | _a criar_                               | 5    |
-| F7 Gemini                                 | _a criar_                               | 6    |
+| Funcionalidade                            | Local                                                       | Fase |
+| ----------------------------------------- | ----------------------------------------------------------- | ---- |
+| Motor de cálculo (pronto)                 | `src/lib/financiamento/`, `src/config/`, `src/lib/dominio/` | 1    |
+| F1 Nossa situação (contexto editável)     | _a criar_                                                   | 2    |
+| F2 Diagnóstico                            | _a criar_                                                   | 2    |
+| F3 Simulador de cenários                  | _a criar_                                                   | 2    |
+| F11 Repasse / F12 Empréstimo para entrada | _a criar_                                                   | 2    |
+| F9 Login, família, RLS                    | _a criar_ + `supabase/migrations/`                          | 3    |
+| F4 Busca guiada / F5 Imóveis / F6 Mapa    | _a criar_                                                   | 4    |
+| F8 Checklists / F10 Tela inicial / PWA    | _a criar_                                                   | 5    |
+| F7 Gemini                                 | _a criar_                                                   | 6    |
 
 (Atualize esta tabela sempre que criar uma funcionalidade.)
 
@@ -130,6 +139,12 @@ pela idade`.
 --delete-branch`.
 6. Ao fim de cada fase: atualizar `docs/PROGRESSO.md` e a tabela acima.
 7. Nunca commitar segredos.
+8. **Sem atribuição de IA**: nunca escrever "Co-Authored-By: Claude", "Generated with Claude Code"
+   ou equivalente (de qualquer IA) em commits, PRs ou código. O dono do repositório não quer IA
+   listada como colaboradora. (`.claude/settings.json` já desliga a atribuição do Claude Code.)
+9. O `gh` desta máquina fica em `%LOCALAPPDATA%\Programs\gh\bin\gh.exe` (fora do PATH).
+10. Modo de trabalho combinado: executar as fases em sequência sem pedir confirmação entre elas;
+    parar só para ações que exigem contas do dono (Supabase, Gemini, Vercel).
 
 ## Convenções de código
 
