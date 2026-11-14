@@ -113,7 +113,7 @@ export default function PaginaEntrar() {
         </Cartao>
       ) : (
         <Cartao>
-          <p className="mb-3 text-lg">
+          <p className="mb-3">
             Enviamos um e-mail para <strong>{email}</strong>. Toque no link do e-mail{" "}
             <strong>ou</strong> digite aqui o código que veio nele (útil no app instalado).
           </p>
@@ -140,7 +140,7 @@ export default function PaginaEntrar() {
           <Botao variante="discreto" className="mt-2 px-0" onClick={() => setEtapa("email")}>
             Usar outro e-mail ou reenviar
           </Botao>
-          <p className="mt-2 text-gray-700">
+          <p className="mt-2 text-texto-2">
             Não chegou? Veja a caixa de spam e espere alguns minutos.
           </p>
         </Cartao>

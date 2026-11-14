@@ -25,7 +25,7 @@ function ResumoPessoa({ pessoa }: { pessoa: Pessoa }) {
   const { emprego } = pessoa;
   return (
     <div className="space-y-2">
-      <p className="text-lg">
+      <p className="">
         {idadeEmAnos(pessoa.dataNascimento, data)} anos · {NOMES_SITUACAO[emprego.situacao]}
         {emprego.situacao !== "desempregado" && emprego.salarioBruto > 0 && (
           <> · {formatarMoeda(emprego.salarioBruto)}/mês</>
@@ -43,7 +43,7 @@ function ResumoPessoa({ pessoa }: { pessoa: Pessoa }) {
         {pessoa.temImovel && <Selo cor="vermelho">Já tem imóvel</Selo>}
       </div>
       {emprego.dataFimPrevista && emprego.situacao !== "desempregado" && (
-        <p className="text-gray-800">Contrato até {formatarData(emprego.dataFimPrevista)}.</p>
+        <p className="text-texto-2">Contrato até {formatarData(emprego.dataFimPrevista)}.</p>
       )}
     </div>
   );
@@ -59,7 +59,7 @@ export default function PaginaPessoas() {
     const antes = estado.pessoas.find((p) => p.id === editando.pessoa.id) ?? null;
     return (
       <>
-        <h2 className="mb-3 text-2xl font-bold">
+        <h2 className="mb-3 text-xl font-semibold">
           {editando.nova ? "Nova pessoa" : `Editar ${editando.pessoa.nome}`}
         </h2>
         <FormPessoa
@@ -86,39 +86,41 @@ export default function PaginaPessoas() {
           Adicione quem vai morar no imóvel e quem pode ser comprador.
         </EstadoVazio>
       )}
-      {estado.pessoas.map((pessoa) => (
-        <Cartao
-          key={pessoa.id}
-          titulo={pessoa.nome}
-          acoes={
-            <div className="flex gap-2">
-              <Botao variante="secundario" onClick={() => setEditando({ pessoa, nova: false })}>
-                Editar
-              </Botao>
-              <Botao
-                variante="perigo"
-                aria-label={`Remover ${pessoa.nome}`}
-                onClick={() => {
-                  if (!confirmar(`Remover ${pessoa.nome}?`)) return;
-                  atualizarEstado(`Removeu ${pessoa.nome}`, (e) => ({
-                    ...e,
-                    pessoas: e.pessoas.filter((x) => x.id !== pessoa.id),
-                  }));
-                }}
-              >
-                Remover
-              </Botao>
-            </div>
-          }
-        >
-          <ResumoPessoa pessoa={pessoa} />
-        </Cartao>
-      ))}
+      <div className="grid gap-x-4 lg:grid-cols-2">
+        {estado.pessoas.map((pessoa) => (
+          <Cartao
+            key={pessoa.id}
+            titulo={pessoa.nome}
+            acoes={
+              <div className="flex gap-2">
+                <Botao variante="secundario" onClick={() => setEditando({ pessoa, nova: false })}>
+                  Editar
+                </Botao>
+                <Botao
+                  variante="perigo"
+                  aria-label={`Remover ${pessoa.nome}`}
+                  onClick={async () => {
+                    if (!(await confirmar(`Remover ${pessoa.nome}?`))) return;
+                    atualizarEstado(`Removeu ${pessoa.nome}`, (e) => ({
+                      ...e,
+                      pessoas: e.pessoas.filter((x) => x.id !== pessoa.id),
+                    }));
+                  }}
+                >
+                  Remover
+                </Botao>
+              </div>
+            }
+          >
+            <ResumoPessoa pessoa={pessoa} />
+          </Cartao>
+        ))}
+      </div>
       <Botao
         className="mt-2 w-full"
         onClick={() => setEditando({ pessoa: pessoaEmBranco(), nova: true })}
       >
-        + Adicionar pessoa
+        Adicionar pessoa
       </Botao>
     </>
   );

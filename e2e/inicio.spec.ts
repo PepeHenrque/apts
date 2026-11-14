@@ -14,11 +14,11 @@ test("tela inicial mostra o semáforo e o aviso de estimativa", async ({ page })
 
 test("cadastrar pessoa → ver diagnóstico → ver cenário no simulador", async ({ page }) => {
   await page.goto("/situacao");
-  page.once("dialog", (d) => d.accept());
   await page.getByRole("button", { name: "Começar do zero" }).click();
+  await page.getByRole("dialog").getByRole("button", { name: "Confirmar" }).click();
   await expect(page.getByText("Nenhuma pessoa cadastrada")).toBeVisible();
 
-  await page.getByRole("button", { name: "+ Adicionar pessoa" }).click();
+  await page.getByRole("button", { name: "Adicionar pessoa" }).click();
   await page.getByLabel("Nome", { exact: true }).fill("Ana");
   await page.getByLabel("Data de nascimento").fill("1990-05-10");
   await page.getByLabel("Situação de trabalho").selectOption("clt");
@@ -34,15 +34,15 @@ test("cadastrar pessoa → ver diagnóstico → ver cenário no simulador", asyn
   await expect(page.getByTestId("preco-maximo")).toContainText("R$");
 
   await page.goto("/imoveis");
-  await page.getByRole("button", { name: "+ Adicionar imóvel" }).click();
+  await page.getByRole("button", { name: "Adicionar imóvel" }).click();
   await page.getByLabel("Cole aqui o texto do anúncio").fill("Apto 2 quartos, 45m², R$ 90.000");
-  await page.getByRole("button", { name: "Preencher a partir do texto" }).click();
+  await page.getByRole("button", { name: "Ler números do texto" }).click();
   await page.getByLabel("Nome do imóvel").fill("Apto barato");
   await page.getByRole("button", { name: "Salvar imóvel" }).click();
   await expect(page.getByRole("heading", { name: "Apto barato" })).toBeVisible();
   await expect(page.getByTestId("cor-orcamento")).toContainText("Cabe no orçamento");
 
-  await page.getByRole("button", { name: "+ Adicionar imóvel" }).click();
+  await page.getByRole("button", { name: "Adicionar imóvel" }).click();
   await page.getByLabel("Nome do imóvel").fill("Casa cara");
   await page.getByLabel("Preço", { exact: true }).fill("900000");
   await page.getByRole("button", { name: "Salvar imóvel" }).click();
@@ -79,7 +79,7 @@ test("sem chave do Gemini, a IA fica escondida e o app funciona", async ({ page,
   const status = await (await request.get("/api/ia/status")).json();
   expect(status.disponivel).toBe(false);
   await page.goto("/imoveis");
-  await page.getByRole("button", { name: "+ Adicionar imóvel" }).click();
-  await expect(page.getByRole("button", { name: "Preencher a partir do texto" })).toBeVisible();
-  await expect(page.getByRole("button", { name: /Preencher com IA/ })).toHaveCount(0);
+  await page.getByRole("button", { name: "Adicionar imóvel" }).click();
+  await expect(page.getByRole("button", { name: "Ler números do texto" })).toBeVisible();
+  await expect(page.getByRole("button", { name: /Preencher automaticamente/ })).toHaveCount(0);
 });

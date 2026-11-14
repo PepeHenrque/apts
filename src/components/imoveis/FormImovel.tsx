@@ -84,12 +84,12 @@ export function FormImovel({
               });
             }}
           >
-            Preencher a partir do texto
+            Ler números do texto
           </Botao>
           {extraTexto?.(texto, aplicar)}
         </div>
         {aviso && (
-          <p role="status" className="mt-2 font-semibold text-blue-900">
+          <p role="status" className="mt-2 font-semibold text-primaria">
             {aviso}
           </p>
         )}
@@ -252,7 +252,7 @@ export function FormImovel({
         />
       </Cartao>
 
-      <div className="sticky bottom-36 z-10 flex gap-2 rounded-2xl bg-gray-50/95 py-3">
+      <div className="sticky bottom-36 z-10 flex gap-2 rounded-md bg-fundo/95 py-3">
         <Botao type="submit" className="flex-1">
           Salvar imóvel
         </Botao>

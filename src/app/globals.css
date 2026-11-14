@@ -1,29 +1,67 @@
 @import "tailwindcss";
 
-/* Base mobile-first, fonte grande e alto contraste (público leigo, uso no celular). */
-:root {
-  --background: #ffffff;
-  --foreground: #111827;
+/*
+ * Design system do apts.
+ * - Uma única cor principal (azul-petróleo) para botões principais, links e item ativo.
+ * - Verde / amarelo / vermelho SÓ para status do orçamento e alertas.
+ * - Neutros para todo o resto. Bordas finas, raio pequeno, sombra quase imperceptível.
+ */
+@theme {
+  --font-sans: var(--font-inter), system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+
+  /* Cor principal */
+  --color-primaria: #0b5563;
+  --color-primaria-forte: #083f4a;
+  --color-primaria-suave: #e7f0f2;
+
+  /* Neutros */
+  --color-fundo: #f6f7f9;
+  --color-superficie: #ffffff;
+  --color-borda: #e2e5ea;
+  --color-borda-forte: #c9ced6;
+  --color-texto: #14181f;
+  --color-texto-2: #4a5260;
+  --color-texto-3: #6b7280;
+
+  /* Status (orçamento e alertas) */
+  --color-ok: #15803d;
+  --color-ok-suave: #eef8f1;
+  --color-atencao: #92600a;
+  --color-atencao-suave: #fdf6e3;
+  --color-erro: #b42318;
+  --color-erro-suave: #fdf0ef;
+  --color-info-suave: #eef3f6;
+
+  --radius-sm: 6px;
+  --radius-md: 8px;
+
+  --shadow-sutil: 0 1px 2px rgb(16 24 40 / 0.04);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
-}
-
+/* Celular: fonte base 17px (confortável para quem tem mais idade). Computador: 16px. */
 html {
-  font-size: 112.5%; /* 18px: leitura confortável no celular */
+  font-size: 106.25%;
+}
+@media (min-width: 1024px) {
+  html {
+    font-size: 100%;
+  }
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--color-fundo);
+  color: var(--color-texto);
   font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Foco sempre visível para quem navega por teclado/leitor de tela. */
+/* Foco sempre visível para quem navega por teclado. */
 :focus-visible {
-  outline: 3px solid #1d4ed8;
+  outline: 2px solid var(--color-primaria);
   outline-offset: 2px;
+}
+
+/* Números de tabelas e valores alinhados. */
+.numeros {
+  font-variant-numeric: tabular-nums;
 }

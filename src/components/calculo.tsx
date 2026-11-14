@@ -1,4 +1,5 @@
 "use client";
+import { AlertTriangle, CheckCircle2, XCircle } from "lucide-react";
 
 import { useState } from "react";
 import { Botao, Selo, Valor } from "@/components/ui";
@@ -15,24 +16,25 @@ import {
 } from "@/lib/formatar";
 
 const ESTILO_SEMAFORO = {
-  pronto: { classe: "border-green-600 bg-green-50", icone: "🟢", cor: "text-green-900" },
-  quase: { classe: "border-amber-500 bg-amber-50", icone: "🟡", cor: "text-amber-950" },
-  "ainda-nao": { classe: "border-red-600 bg-red-50", icone: "🔴", cor: "text-red-900" },
+  pronto: { classe: "border-ok bg-ok-suave", icone: CheckCircle2, cor: "text-ok" },
+  quase: { classe: "border-[#e2c47a] bg-atencao-suave", icone: AlertTriangle, cor: "text-atencao" },
+  "ainda-nao": { classe: "border-erro bg-erro-suave", icone: XCircle, cor: "text-erro" },
 } as const;
 
 export function CartaoSemaforo({ diagnostico }: { diagnostico: Diagnostico }) {
   const estilo = ESTILO_SEMAFORO[diagnostico.semaforo];
+  const Icone = estilo.icone;
   return (
     <section
       aria-label="Situação geral"
       data-testid="semaforo"
-      className={`mb-4 rounded-2xl border-4 p-5 ${estilo.classe}`}
+      className={`mb-4 rounded-md border p-5 ${estilo.classe}`}
     >
-      <p className={`text-3xl font-bold ${estilo.cor}`}>
-        <span aria-hidden="true">{estilo.icone} </span>
+      <p className={`flex items-center gap-2 text-2xl font-semibold tracking-tight ${estilo.cor}`}>
+        <Icone size={26} strokeWidth={1.75} aria-hidden="true" />
         {diagnostico.tituloSemaforo}
       </p>
-      <p className="mt-2 text-lg">{diagnostico.resumo}</p>
+      <p className="mt-2">{diagnostico.resumo}</p>
     </section>
   );
 }
@@ -57,10 +59,10 @@ export function CartaoCenario({
   return (
     <section
       data-testid="cenario"
-      className={`mb-4 rounded-2xl border-2 bg-white p-4 ${ehMelhor ? "border-green-600 ring-2 ring-green-600" : r.viavel ? "border-gray-300" : "border-gray-200 opacity-95"}`}
+      className={`mb-4 rounded-md border bg-white p-4 ${ehMelhor ? "border-ok ring-1 ring-ok" : r.viavel ? "border-borda" : "border-borda opacity-95"}`}
     >
       <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
-        <h3 className="text-xl font-bold">{cenario.nome}</h3>
+        <h3 className="text-lg font-semibold">{cenario.nome}</h3>
         {ehMelhor ? (
           <Selo cor="verde">Melhor opção hoje</Selo>
         ) : r.viavel ? (
@@ -70,33 +72,47 @@ export function CartaoCenario({
         )}
       </div>
 
-      <p className="text-lg">
-        {r.viavel ? "Imóvel de até" : "Se resolver os bloqueios, imóvel de até"}
-      </p>
-      <p className="text-4xl font-bold" data-testid="preco-maximo">
+      <p className="">{r.viavel ? "Imóvel de até" : "Se resolver os bloqueios, imóvel de até"}</p>
+      <p className="numeros text-3xl font-semibold tracking-tight" data-testid="preco-maximo">
         {formatarMoedaInteira(r.precoMaximo.SAC)}
       </p>
-      <p className="text-gray-700">
+      <p className="text-texto-2">
         (tabela SAC; na Price: {formatarMoedaInteira(r.precoMaximo.PRICE)})
       </p>
 
       {r.impedimentos.length > 0 && (
-        <ul className="mt-3 space-y-1 rounded-xl bg-red-50 p-3 text-red-950">
+        <ul className="mt-3 space-y-1 rounded-md bg-erro-suave p-3 text-erro">
           {r.impedimentos.map((i, n) => (
-            <li key={n}>⛔ {i.mensagem}</li>
+            <li key={n} className="flex gap-2">
+              <XCircle
+                size={18}
+                strokeWidth={1.75}
+                aria-hidden="true"
+                className="mt-0.5 shrink-0"
+              />
+              {i.mensagem}
+            </li>
           ))}
         </ul>
       )}
       {r.avisos.length > 0 && (
-        <ul className="mt-3 space-y-1 rounded-xl bg-amber-50 p-3 text-amber-950">
+        <ul className="mt-3 space-y-1 rounded-md bg-atencao-suave p-3 text-atencao">
           {r.avisos.map((a, n) => (
-            <li key={n}>⚠️ {a}</li>
+            <li key={n} className="flex gap-2">
+              <AlertTriangle
+                size={18}
+                strokeWidth={1.75}
+                aria-hidden="true"
+                className="mt-0.5 shrink-0"
+              />
+              {a}
+            </li>
           ))}
         </ul>
       )}
 
       <details className="mt-3">
-        <summary className="min-h-12 cursor-pointer py-2 text-lg font-semibold text-blue-800">
+        <summary className="min-h-11 cursor-pointer py-2 text-lg font-semibold text-primaria">
           Ver como foi calculado
         </summary>
         <dl className="mt-2">
@@ -146,8 +162,8 @@ export function CartaoCenario({
             destaque
           />
         </dl>
-        <p className="mt-2 text-gray-800">{TEXTO_LIMITE[r.limitadoPor]}</p>
-        <p className="mt-2 text-gray-700">
+        <p className="mt-2 text-texto-2">{TEXTO_LIMITE[r.limitadoPor]}</p>
+        <p className="mt-2 text-texto-2">
           SAC: a primeira parcela é a maior e elas vão diminuindo. Price: parcelas quase iguais,
           financia um pouco mais, mas paga mais juros no total.
         </p>
@@ -172,9 +188,9 @@ export function TabelaParcelas({ cenario }: { cenario: Cenario }) {
   return (
     <section
       aria-labelledby="titulo-parcelas"
-      className="mb-4 rounded-2xl border-2 border-blue-300 bg-white p-4"
+      className="mb-4 rounded-md border border-borda bg-white p-4"
     >
-      <h3 id="titulo-parcelas" className="text-xl font-bold">
+      <h3 id="titulo-parcelas" className="text-lg font-semibold">
         Parcelas — {cenario.nome}
       </h3>
       <div role="radiogroup" aria-label="Sistema de amortização" className="my-3 flex gap-2">
@@ -185,7 +201,7 @@ export function TabelaParcelas({ cenario }: { cenario: Cenario }) {
             role="radio"
             aria-checked={sistema === s}
             onClick={() => setSistema(s)}
-            className={`min-h-12 flex-1 rounded-xl border-2 font-semibold ${sistema === s ? "border-blue-700 bg-blue-700 text-white" : "border-gray-300 bg-white"}`}
+            className={`min-h-11 flex-1 rounded-md border font-semibold ${sistema === s ? "border-primaria bg-primaria text-white" : "border-borda bg-white"}`}
           >
             {s === "SAC" ? "SAC" : "Price"}
           </button>
@@ -199,7 +215,7 @@ export function TabelaParcelas({ cenario }: { cenario: Cenario }) {
         <table className="w-full text-left text-base">
           <caption className="sr-only">Primeiros 12 meses</caption>
           <thead>
-            <tr className="border-b-2 border-gray-300">
+            <tr className="border-b-2 border-borda">
               <th scope="col" className="py-2 pr-2">
                 Mês
               </th>
@@ -219,7 +235,7 @@ export function TabelaParcelas({ cenario }: { cenario: Cenario }) {
           </thead>
           <tbody className="tabular-nums">
             {ev.linhas.map((l) => (
-              <tr key={l.mes} className="border-b border-gray-100">
+              <tr key={l.mes} className="border-b border-borda">
                 <td className="py-1 pr-2">{l.mes}</td>
                 <td className="py-1 pr-2 font-semibold">{formatarMoeda(l.parcela)}</td>
                 <td className="py-1 pr-2">{formatarMoeda(l.juros)}</td>

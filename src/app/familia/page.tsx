@@ -34,11 +34,11 @@ interface Convite {
 }
 
 const TEXTO_STATUS: Partial<Record<StatusNuvem["tipo"], string>> = {
-  sincronizado: "✅ Dados sincronizados com a família",
-  salvando: "⏳ Salvando…",
-  carregando: "⏳ Carregando…",
-  erro: "⚠️ Sem conexão com a nuvem",
-  conflito: "⚠️ Houve uma alteração ao mesmo tempo",
+  sincronizado: "Dados sincronizados com a família",
+  salvando: "Salvando…",
+  carregando: "Carregando…",
+  erro: "Sem conexão com a nuvem",
+  conflito: "Houve uma alteração ao mesmo tempo",
 };
 
 function useListas(familiaId: string | null, email: string | undefined) {
@@ -128,22 +128,22 @@ export default function PaginaFamilia() {
       {!nuvem.familia ? (
         <>
           {convitesParaMim.map((c) => (
-            <Cartao key={c.id} titulo="Você recebeu um convite!">
-              <p className="mb-3 text-lg">
+            <Cartao key={c.id} titulo="Você recebeu um convite">
+              <p className="mb-3">
                 Ao entrar, os dados deste aparelho serão trocados pelos da família (guardamos uma
                 cópia).
               </p>
               <Botao
                 className="w-full"
                 disabled={ocupado}
-                onClick={() => executar(() => aceitarConvite(c.id), "Você entrou na família!")}
+                onClick={() => executar(() => aceitarConvite(c.id), "Você entrou na família.")}
               >
                 Entrar na família
               </Botao>
             </Cartao>
           ))}
           <Cartao titulo="Criar a família">
-            <p className="mb-3 text-lg">
+            <p className="mb-3">
               Os dados que estão neste aparelho vão para a família. Depois convide os outros pelo
               e-mail.
             </p>
@@ -154,7 +154,7 @@ export default function PaginaFamilia() {
               onClick={() =>
                 executar(
                   () => criarFamilia(nomeFamilia),
-                  "Família criada! Agora convide os outros.",
+                  "Família criada. Agora convide os outros.",
                 )
               }
             >
@@ -168,21 +168,21 @@ export default function PaginaFamilia() {
             <p className="mb-3 text-lg font-semibold" role="status">
               {TEXTO_STATUS[nuvem.tipo] ?? ""}
             </p>
-            <h3 className="text-lg font-bold">Quem participa</h3>
-            <ul className="mb-2 divide-y divide-gray-200">
+            <h3 className="font-semibold">Quem participa</h3>
+            <ul className="mb-2 divide-y divide-borda">
               {membros.map((m) => (
                 <li
                   key={m.usuario_id}
                   className="flex flex-wrap items-center justify-between gap-2 py-2"
                 >
-                  <span className="text-lg">
+                  <span className="">
                     {m.email} {m.papel === "dono" && <Selo cor="azul">Dono</Selo>}
                   </span>
                   {souDono && m.usuario_id !== nuvem.usuario?.id && (
                     <Botao
                       variante="perigo"
                       onClick={async () => {
-                        if (!confirmar(`Remover ${m.email} da família?`)) return;
+                        if (!(await confirmar(`Remover ${m.email} da família?`))) return;
                         await obterSupabase()
                           ?.from("membros")
                           .delete()
@@ -225,21 +225,21 @@ export default function PaginaFamilia() {
             </form>
             {convitesDaFamilia.length > 0 && (
               <>
-                <h3 className="mt-4 text-lg font-bold">Convites esperando</h3>
-                <ul className="divide-y divide-gray-200">
+                <h3 className="mt-4 font-semibold">Convites esperando</h3>
+                <ul className="divide-y divide-borda">
                   {convitesDaFamilia.map((c) => {
                     const texto = `Oi! Entre no app da nossa casa: ${enderecoApp}/entrar — use o e-mail ${c.email} e depois toque em "Entrar na família".`;
                     return (
                       <li key={c.id} className="py-2">
-                        <p className="text-lg">{c.email}</p>
+                        <p className="">{c.email}</p>
                         <div className="mt-1 flex flex-wrap gap-2">
                           <a
                             href={`https://wa.me/?text=${encodeURIComponent(texto)}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="font-semibold text-blue-800 underline"
+                            className="font-semibold text-primaria underline"
                           >
-                            Avisar pelo WhatsApp ↗
+                            Avisar pelo WhatsApp
                           </a>
                           <Botao
                             variante="discreto"
@@ -262,9 +262,9 @@ export default function PaginaFamilia() {
           <Botao
             variante="perigo"
             className="mb-3 w-full"
-            onClick={() => {
+            onClick={async () => {
               if (
-                confirmar(
+                await confirmar(
                   "Sair da família? Os dados continuam neste aparelho, mas param de sincronizar.",
                 )
               ) {

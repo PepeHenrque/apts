@@ -43,7 +43,7 @@ export function ListaVerificacao({
           const salvo = estado.checklists[chave];
           const idCampo = `lv-${chave}`;
           return (
-            <li key={item.id} className="rounded-xl border-2 border-gray-200 bg-white p-3">
+            <li key={item.id} className="rounded-md border border-borda bg-white p-3">
               <div className="flex items-start gap-3">
                 <input
                   id={idCampo}
@@ -55,11 +55,11 @@ export function ListaVerificacao({
                 <div className="flex-1">
                   <label
                     htmlFor={idCampo}
-                    className={`text-lg ${salvo?.feito ? "line-through decoration-2" : ""}`}
+                    className={` ${salvo?.feito ? "line-through decoration-2" : ""}`}
                   >
                     {item.texto}
                   </label>
-                  {item.ajuda && <p className="text-gray-700">{item.ajuda}</p>}
+                  {item.ajuda && <p className="text-texto-2">{item.ajuda}</p>}
                   {comNotas && (
                     <div className="mt-2">
                       <label htmlFor={`${idCampo}-nota`} className="text-base font-semibold">
@@ -76,7 +76,7 @@ export function ListaVerificacao({
                             salvar(chave, item.texto, { nota });
                           }
                         }}
-                        className="mt-1 block w-full rounded-xl border-2 border-gray-400 p-2 text-lg"
+                        className="mt-1 block w-full rounded-md border border-borda-forte p-2"
                       />
                     </div>
                   )}

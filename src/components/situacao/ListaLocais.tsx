@@ -35,10 +35,10 @@ export function ListaLocais({
     );
   return (
     <fieldset className="mb-4">
-      <legend className="text-lg font-bold">{titulo}</legend>
-      {ajuda && <p className="mb-2 text-gray-700">{ajuda}</p>}
+      <legend className="font-semibold">{titulo}</legend>
+      {ajuda && <p className="mb-2 text-texto-2">{ajuda}</p>}
       {locais.map((l, i) => (
-        <div key={l.id} className="mb-3 rounded-xl border-2 border-gray-200 p-3">
+        <div key={l.id} className="mb-3 rounded-md border border-borda p-3">
           <CampoTexto
             rotulo={`${rotuloNome} ${i + 1}`}
             valor={l.nome}
@@ -62,7 +62,7 @@ export function ListaLocais({
           aoMudar([...locais, { id: novoId(), nome: "", endereco: "", lat: null, lon: null }])
         }
       >
-        + Adicionar
+        Adicionar
       </Botao>
     </fieldset>
   );

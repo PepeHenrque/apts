@@ -3,7 +3,7 @@ export function AvisoEstimativa() {
   return (
     <p
       data-testid="aviso-estimativa"
-      className="border-t border-gray-300 bg-amber-50 px-3 py-1 text-center text-xs text-gray-900 sm:text-sm"
+      className="border-t border-borda bg-fundo/95 px-3 py-1.5 text-center text-xs text-texto-2 backdrop-blur-sm"
     >
       Simulações são estimativas. Não é aconselhamento financeiro. Confirme com a Caixa ou um
       correspondente bancário.

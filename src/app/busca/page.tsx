@@ -1,4 +1,5 @@
 "use client";
+import { ExternalLink } from "lucide-react";
 
 import { useState } from "react";
 import { BotaoLocalizar } from "@/components/BotaoLocalizar";
@@ -68,7 +69,7 @@ export default function PaginaBusca() {
           valor={cidadeUf}
           aoMudar={setCidade}
         />
-        <p className="text-gray-700">
+        <p className="text-texto-2">
           Quartos e tipo de imóvel vêm de Situação → Imóvel desejado (
           {p.quartosMin || "qualquer nº de"} quarto(s)).
         </p>
@@ -78,18 +79,27 @@ export default function PaginaBusca() {
         <Aviso tipo="alerta">Informe a cidade para os links filtrarem a região certa.</Aviso>
       )}
 
-      <h2 className="mb-3 text-2xl font-bold">Sites</h2>
-      <ul className="mb-6 space-y-3">
+      <h2 className="mb-3 text-xl font-semibold">Sites</h2>
+      <ul className="mb-6 grid gap-3 sm:grid-cols-2">
         {links.map((l) => (
           <li key={l.site}>
             <a
               href={l.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="block rounded-2xl border-2 border-blue-700 bg-white p-4 hover:bg-blue-50"
+              className="block rounded-md border border-primaria bg-white p-4 hover:bg-primaria-suave"
             >
-              <span className="block text-xl font-bold text-blue-900">{l.site} ↗</span>
-              {l.observacao && <span className="text-gray-800">{l.observacao}</span>}
+              <span className="block text-lg font-semibold text-primaria">
+                {l.site}
+                <ExternalLink
+                  size={16}
+                  strokeWidth={1.75}
+                  aria-hidden="true"
+                  className="ml-1.5 inline align-[-2px]"
+                />
+                <span className="sr-only"> (abre em nova aba)</span>
+              </span>
+              {l.observacao && <span className="text-texto-2">{l.observacao}</span>}
             </a>
           </li>
         ))}
@@ -101,7 +111,7 @@ export default function PaginaBusca() {
       <Cartao titulo="Bairros e cidades desejados">
         {!casa && (
           <div className="mb-4">
-            <p className="text-lg">Para ver distâncias, localize a casa atual:</p>
+            <p className="">Para ver distâncias, localize a casa atual:</p>
             {p.casaAtual.endereco ? (
               <BotaoLocalizar
                 endereco={p.casaAtual.endereco}
@@ -124,7 +134,7 @@ export default function PaginaBusca() {
           </div>
         )}
         {p.locaisDesejados.length === 0 ? (
-          <p className="text-lg">
+          <p className="">
             Nenhum bairro cadastrado.{" "}
             <BotaoLink href="/situacao/preferencias" variante="discreto" className="px-0">
               Adicionar bairros
@@ -136,11 +146,11 @@ export default function PaginaBusca() {
               const c = coordenadasDe(l);
               const linksBairro = gerarLinksBusca({ ...filtroBase, bairro: l.nome }).slice(0, 3);
               return (
-                <li key={l.id} className="rounded-xl border-2 border-gray-200 p-3">
-                  <p className="text-lg font-bold">{l.nome}</p>
+                <li key={l.id} className="rounded-md border border-borda p-3">
+                  <p className="font-semibold">{l.nome}</p>
                   {c && casa && <p>{formatarDistancia(distanciaKm(casa, c))} da casa atual</p>}
                   {c && casa && p.distanciaMaxKm > 0 && distanciaKm(casa, c) > p.distanciaMaxKm && (
-                    <p className="font-semibold text-amber-900">
+                    <p className="font-semibold text-atencao">
                       Acima da distância máxima ({p.distanciaMaxKm} km).
                     </p>
                   )}
@@ -152,7 +162,7 @@ export default function PaginaBusca() {
                         href={lb.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="mr-3 font-semibold text-blue-800 underline"
+                        className="mr-3 font-semibold text-primaria underline"
                       >
                         {lb.site}
                       </a>

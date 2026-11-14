@@ -16,13 +16,13 @@ export default function PaginaHistorico() {
   }
   return (
     <Cartao titulo="Últimas alterações">
-      <ol className="divide-y divide-gray-200">
+      <ol className="divide-y divide-borda">
         {estado.historico.map((h) => (
           <li key={h.id} className="py-3">
-            <p className="text-lg">
+            <p className="">
               <strong>{h.quem}</strong> — {h.descricao}
             </p>
-            <p className="text-gray-700">{formatarDataHora(h.quando)}</p>
+            <p className="text-texto-2">{formatarDataHora(h.quando)}</p>
           </li>
         ))}
       </ol>

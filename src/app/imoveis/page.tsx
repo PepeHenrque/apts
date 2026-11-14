@@ -1,4 +1,5 @@
 "use client";
+import { Map as MapIcone, Plus, Search } from "lucide-react";
 
 import { useMemo, useState } from "react";
 import { CampoMarcar, CampoSelecao } from "@/components/campos";
@@ -72,7 +73,7 @@ export default function PaginaImoveis() {
             referencia && (
               <div className="mb-4">
                 <SeloOrcamento cor={avaliarImovel(preco, referencia.resultado).cor} />
-                <p className="mt-1 text-gray-700">
+                <p className="mt-1 text-texto-2">
                   Parcela estimada:{" "}
                   {formatarMoeda(avaliarImovel(preco, referencia.resultado).parcelaEstimada)}
                 </p>
@@ -130,12 +131,14 @@ export default function PaginaImoveis() {
       </TituloPagina>
       <AvisoCalculo />
       <div className="mb-4 grid grid-cols-1 gap-2 sm:grid-cols-3">
-        <Botao onClick={() => setEditando(imovelEmBranco())}>+ Adicionar imóvel</Botao>
-        <BotaoLink href="/busca" variante="secundario">
-          🔎 Buscar nos sites
+        <Botao icone={Plus} onClick={() => setEditando(imovelEmBranco())}>
+          Adicionar imóvel
+        </Botao>
+        <BotaoLink href="/busca" variante="secundario" icone={Search}>
+          Buscar nos sites
         </BotaoLink>
-        <BotaoLink href="/mapa" variante="secundario">
-          🗺️ Ver no mapa
+        <BotaoLink href="/mapa" variante="secundario" icone={MapIcone}>
+          Ver no mapa
         </BotaoLink>
       </div>
 
@@ -146,11 +149,11 @@ export default function PaginaImoveis() {
         </EstadoVazio>
       ) : (
         <>
-          <p className="mb-3 text-lg">
+          <p className="mb-3">
             <strong>{quantosCabem}</strong> de {estado.imoveis.length} cabem no orçamento.
           </p>
-          <details className="mb-4 rounded-2xl border-2 border-gray-200 bg-white p-3">
-            <summary className="min-h-12 cursor-pointer py-2 text-lg font-semibold">
+          <details className="mb-4 rounded-md border border-borda bg-white p-3">
+            <summary className="min-h-11 cursor-pointer py-2 text-lg font-semibold">
               Filtrar e ordenar
             </summary>
             <CampoSelecao
@@ -172,22 +175,24 @@ export default function PaginaImoveis() {
             />
           </details>
           {visiveis.length === 0 && <EstadoVazio titulo="Nenhum imóvel com esses filtros" />}
-          {visiveis.map((dados) => (
-            <CartaoImovel
-              key={dados.imovel.id}
-              dados={dados}
-              preferencias={estado.preferencias}
-              aoEditar={() => setEditando(dados.imovel)}
-              aoMudar={mudarImovel(dados.imovel.id)}
-              aoRemover={() => {
-                if (!confirmar(`Remover "${dados.imovel.titulo}"?`)) return;
-                atualizarEstado(`Removeu o imóvel "${dados.imovel.titulo}"`, (e) => ({
-                  ...e,
-                  imoveis: e.imoveis.filter((i) => i.id !== dados.imovel.id),
-                }));
-              }}
-            />
-          ))}
+          <div className="grid gap-x-4 lg:grid-cols-2">
+            {visiveis.map((dados) => (
+              <CartaoImovel
+                key={dados.imovel.id}
+                dados={dados}
+                preferencias={estado.preferencias}
+                aoEditar={() => setEditando(dados.imovel)}
+                aoMudar={mudarImovel(dados.imovel.id)}
+                aoRemover={async () => {
+                  if (!(await confirmar(`Remover "${dados.imovel.titulo}"?`))) return;
+                  atualizarEstado(`Removeu o imóvel "${dados.imovel.titulo}"`, (e) => ({
+                    ...e,
+                    imoveis: e.imoveis.filter((i) => i.id !== dados.imovel.id),
+                  }));
+                }}
+              />
+            ))}
+          </div>
         </>
       )}
     </>

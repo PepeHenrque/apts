@@ -14,9 +14,9 @@ import {
 
 function Secao({ secao, aberta = false }: { secao: SecaoChecklist; aberta?: boolean }) {
   return (
-    <details className="mb-4 rounded-2xl border-2 border-gray-200 bg-white p-4" open={aberta}>
-      <summary className="min-h-12 cursor-pointer text-xl font-bold">{secao.titulo}</summary>
-      <p className="my-2 text-lg text-gray-800">{secao.descricao}</p>
+    <details className="mb-4 rounded-md border border-borda bg-white p-4" open={aberta}>
+      <summary className="min-h-11 cursor-pointer text-lg font-semibold">{secao.titulo}</summary>
+      <p className="my-2 text-texto-2">{secao.descricao}</p>
       <ListaVerificacao prefixo={secao.prefixo} itens={secao.itens} comNotas={secao.comNotas} />
     </details>
   );
@@ -37,12 +37,12 @@ export default function PaginaGuias() {
         bancário.
       </Aviso>
 
-      <h2 className="mb-3 text-2xl font-bold">Documentos para a Caixa</h2>
+      <h2 className="mb-3 text-xl font-semibold">Documentos para a Caixa</h2>
       {secoesDocumentos(estado.pessoas).map((s, i) => (
         <Secao key={s.prefixo} secao={s} aberta={i === 0} />
       ))}
 
-      <h2 className="mt-6 mb-3 text-2xl font-bold">Guias</h2>
+      <h2 className="mt-6 mb-3 text-xl font-semibold">Guias</h2>
       <Secao secao={CHECKLIST_LIMPAR_NOME} aberta={temNegativado} />
       <Secao secao={CHECKLIST_FAIXA1} />
       <Secao secao={CHECKLIST_IMOVEL} />

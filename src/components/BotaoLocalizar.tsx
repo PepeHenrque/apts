@@ -1,4 +1,5 @@
 "use client";
+import { MapPin } from "lucide-react";
 
 import { useState } from "react";
 import { Botao } from "@/components/ui";
@@ -22,6 +23,7 @@ export function BotaoLocalizar({
     <div className="mt-2">
       <Botao
         variante="secundario"
+        icone={MapPin}
         disabled={estado === "buscando" || endereco.trim().length < 3}
         onClick={async () => {
           setEstado("buscando");
@@ -40,10 +42,10 @@ export function BotaoLocalizar({
           }
         }}
       >
-        📍 {estado === "buscando" ? "Localizando…" : rotulo}
+        {estado === "buscando" ? "Localizando…" : rotulo}
       </Botao>
       {(estado === "erro" || estado === "nao-achou") && (
-        <p role="alert" className="mt-1 font-semibold text-red-800">
+        <p role="alert" className="mt-1 font-semibold text-erro">
           {mensagem}
         </p>
       )}

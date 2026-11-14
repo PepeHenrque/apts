@@ -1,4 +1,5 @@
 "use client";
+import { ExternalLink } from "lucide-react";
 
 import { CartaoSemaforo } from "@/components/calculo";
 import { ExplicarSituacao } from "@/components/ia/Ia";
@@ -29,7 +30,7 @@ export default function PaginaDiagnostico() {
 
       {d.recusas.total > 0 && (
         <Cartao titulo="O que dizem as recusas">
-          <p className="text-lg">{d.recusas.frase}</p>
+          <p className="">{d.recusas.frase}</p>
           <BotaoLink href="/situacao/recusas" variante="discreto" className="mt-1 px-0">
             Ver todas as recusas
           </BotaoLink>
@@ -40,7 +41,7 @@ export default function PaginaDiagnostico() {
         <Cartao titulo="Mudanças já previstas">
           <ul className="space-y-2">
             {d.mudancas.map((m) => (
-              <li key={`${m.pessoaId}-${m.data}`} className="text-lg">
+              <li key={`${m.pessoaId}-${m.data}`} className="">
                 <strong>{formatarData(m.data)}:</strong> {m.descricao}
               </li>
             ))}
@@ -48,10 +49,10 @@ export default function PaginaDiagnostico() {
         </Cartao>
       )}
 
-      <h2 className="mt-6 mb-3 text-2xl font-bold">Bloqueios e alertas</h2>
+      <h2 className="mt-6 mb-3 text-xl font-semibold">Bloqueios e alertas</h2>
       {d.bloqueios.length === 0 && (
         <Cartao>
-          <p className="text-lg">Nenhum bloqueio encontrado com os dados atuais. 🎉</p>
+          <p className="">Nenhum bloqueio encontrado com os dados atuais.</p>
         </Cartao>
       )}
       {d.bloqueios.map((b) => (
@@ -59,9 +60,9 @@ export default function PaginaDiagnostico() {
           <div className="mb-2">
             <Selo cor={SELO_GRAVIDADE[b.gravidade].cor}>{SELO_GRAVIDADE[b.gravidade].texto}</Selo>
           </div>
-          <p className="text-lg">{b.explicacao}</p>
-          <h3 className="mt-3 text-lg font-bold">O que fazer</h3>
-          <ul className="mt-1 list-disc space-y-1 pl-6 text-lg">
+          <p className="">{b.explicacao}</p>
+          <h3 className="mt-3 font-semibold">O que fazer</h3>
+          <ul className="mt-1 list-disc space-y-1 pl-6">
             {b.oQueFazer.map((passo) => (
               <li key={passo}>{passo}</li>
             ))}
@@ -74,9 +75,16 @@ export default function PaginaDiagnostico() {
                     href={l.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-lg font-semibold text-blue-800 underline"
+                    className="text-lg font-semibold text-primaria underline"
                   >
-                    {l.texto} ↗
+                    {l.texto}
+                    <ExternalLink
+                      size={16}
+                      strokeWidth={1.75}
+                      aria-hidden="true"
+                      className="ml-1 inline align-[-2px]"
+                    />
+                    <span className="sr-only"> (abre em nova aba)</span>
                   </a>
                 </li>
               ))}
