@@ -69,3 +69,8 @@ test("manifesto do app instalável", async ({ request }) => {
   expect(manifesto.short_name).toBe("apts");
   expect(manifesto.icons.length).toBeGreaterThanOrEqual(2);
 });
+
+test("sem Supabase configurado, a família funciona em modo só neste aparelho", async ({ page }) => {
+  await page.goto("/familia");
+  await expect(page.getByText("Modo só neste aparelho")).toBeVisible();
+});
