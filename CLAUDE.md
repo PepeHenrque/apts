@@ -106,18 +106,20 @@ docs/
 
 ## Onde está cada funcionalidade
 
-| Funcionalidade                         | Local                                                       | Fase |
-| -------------------------------------- | ----------------------------------------------------------- | ---- |
-| Motor de cálculo (pronto)              | `src/lib/financiamento/`, `src/config/`, `src/lib/dominio/` | 1    |
-| F1 Nossa situação (pronto)             | `src/app/situacao/*`, `src/components/situacao/`            | 2    |
-| F2 Diagnóstico (pronto)                | `src/app/diagnostico`, `src/lib/dominio/diagnostico.ts`     | 2    |
-| F3 Simulador (pronto)                  | `src/app/simulador`, `src/components/calculo.tsx`           | 2    |
-| F11 Repasse / F12 Empréstimo (pronto)  | `src/app/repasse`, `src/app/emprestimo`                     | 2    |
-| Armazenamento local (localStorage)     | `src/lib/armazenamento/loja.ts` + `hooks.ts`                | 2    |
-| F9 Login, família, RLS                 | _a criar_ + `supabase/migrations/`                          | 3    |
-| F4 Busca guiada / F5 Imóveis / F6 Mapa | _a criar_                                                   | 4    |
-| F8 Checklists / F10 Tela inicial / PWA | _a criar_                                                   | 5    |
-| F7 Gemini                              | _a criar_                                                   | 6    |
+| Funcionalidade                         | Local                                                                              | Fase |
+| -------------------------------------- | ---------------------------------------------------------------------------------- | ---- |
+| Motor de cálculo (pronto)              | `src/lib/financiamento/`, `src/config/`, `src/lib/dominio/`                        | 1    |
+| F1 Nossa situação (pronto)             | `src/app/situacao/*`, `src/components/situacao/`                                   | 2    |
+| F2 Diagnóstico (pronto)                | `src/app/diagnostico`, `src/lib/dominio/diagnostico.ts`                            | 2    |
+| F3 Simulador (pronto)                  | `src/app/simulador`, `src/components/calculo.tsx`                                  | 2    |
+| F11 Repasse / F12 Empréstimo (pronto)  | `src/app/repasse`, `src/app/emprestimo`                                            | 2    |
+| Armazenamento local (localStorage)     | `src/lib/armazenamento/loja.ts` + `hooks.ts`                                       | 2    |
+| F9 Login, família, RLS                 | _a criar_ + `supabase/migrations/`                                                 | 3    |
+| F4 Busca guiada (pronto)               | `src/app/busca`, `src/lib/busca/links.ts`                                          | 4    |
+| F5 Imóveis salvos (pronto)             | `src/app/imoveis`, `src/components/imoveis/`, `src/lib/dominio/imoveis.ts`         | 4    |
+| F6 Mapa (pronto)                       | `src/app/mapa`, `src/components/mapa/`, `src/lib/geo/`, `src/app/api/geocodificar` | 4    |
+| F8 Checklists / F10 Tela inicial / PWA | _a criar_                                                                          | 5    |
+| F7 Gemini                              | _a criar_                                                                          | 6    |
 
 (Atualize esta tabela sempre que criar uma funcionalidade.)
 

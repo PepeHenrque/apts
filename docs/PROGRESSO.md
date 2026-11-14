@@ -3,7 +3,7 @@
 > Atualize este arquivo ao fim de cada fase. Ele deve bastar para qualquer pessoa ou IA continuar o
 > trabalho sem o histórico do chat. Pedido completo: `docs/PROMPT-ORIGINAL.md`.
 
-Última atualização: 14/11/2026 — Fase 2 concluída.
+Última atualização: 14/11/2026 — Fase 4 concluída.
 
 ## Ordem de execução combinada com o dono (14/11/2026)
 
@@ -15,7 +15,7 @@ depende de contas externas:
 | 1     | 0    | Setup: Next.js, TS, Tailwind, Vitest, ESLint/Prettier, CI, docs              | Concluída    |
 | 2     | 1    | Motor de cálculo (`regras-mcmv.ts` + funções + testes)                       | Concluída    |
 | 3     | 2    | F1, F2, F3, F11, F12 com localStorage                                        | Concluída    |
-| 4     | 4    | F4 busca guiada, F5 imóveis salvos, F6 mapa (localStorage)                   | Não iniciada |
+| 4     | 4    | F4 busca guiada, F5 imóveis salvos, F6 mapa (localStorage)                   | Concluída    |
 | 5     | 5    | F8 checklists, F10 tela inicial, PWA instalável (Windows e celular)          | Não iniciada |
 | 6     | 3    | Supabase + login + família + RLS (F9) — código pronto + passo a passo        | Não iniciada |
 | 7     | 6    | Gemini (F7) — código pronto + passo a passo da chave                         | Não iniciada |
@@ -81,6 +81,24 @@ configuráveis e marcados "A CONFIRMAR"; **nunca** colocar atribuição de IA em
   o único impedimento é aguardar o score; senão "ainda não".
 - E2E (CI): tela inicial; cadastrar pessoa → diagnóstico "pronto" → simulador → histórico.
 
+## Fase 4 — Imóveis, busca guiada e mapa (pronto, localStorage)
+
+- `src/lib/dominio/imoveis.ts`: `avaliarImovelSalvo()` (cor do orçamento contra o melhor cenário,
+  ou o potencial se nenhum for aprovável; entrada, parcela, custo mensal com condomínio e IPTU,
+  distâncias, alertas de preferência), `ordenarImoveis()`, `extrairDoTexto()` (lê preço, quartos,
+  m², condomínio, IPTU e link de um anúncio colado — sem IA).
+- `src/lib/busca/links.ts`: links pré-filtrados para OLX, Zap, VivaReal, Imóveis Caixa (sem filtro
+  por link) e Facebook Marketplace. Os formatos dos sites podem mudar — ajustar aqui.
+- `src/lib/geo/`: Haversine, link de rota do Google Maps, Nominatim (`nominatim.ts`),
+  geocodificação no cliente com fila de 1,1 s e cache em localStorage (`geocodificar.ts`).
+  `src/app/api/geocodificar/route.ts` chama o Nominatim no servidor com User-Agent
+  (`NOMINATIM_USER_AGENT`), 1 pedido/s e cache em memória. No app de Windows (sem servidor) o
+  cliente chama o Nominatim direto (`NEXT_PUBLIC_DESKTOP=1`).
+- Telas: `/imoveis` (lista, filtros, ordenação, formulário com "colar anúncio", prévia da cor),
+  `/busca` (links + bairros com distância), `/mapa` (Leaflet + OpenStreetMap, legenda, "localizar
+  todos").
+- E2E: salvar imóvel barato (verde) e caro (vermelho).
+
 ## Decisões tomadas
 
 - **Juros nominais ÷ 12** para a taxa mensal (como a Caixa divulga).
@@ -92,13 +110,11 @@ configuráveis e marcados "A CONFIRMAR"; **nunca** colocar atribuição de IA em
 - `@types/node` 24 (Vitest 5 exige ≥ 22); fonte do sistema (sem Google Fonts).
 - Build e E2E não rodam localmente (notebook fraco) — o CI faz.
 
-## Próximos passos (Fase 4 — imóveis, busca guiada, mapa)
+## Próximos passos (Fase 5 — checklists, tela inicial, PWA)
 
-1. Branch `feat/f4-imoveis-busca-mapa`.
-2. `/imoveis`: lista com filtros/ordenação, cor do orçamento (`avaliarImovel` contra o melhor
-   cenário — ou o potencial se nenhum for viável), entrada/parcela estimadas, distância (Haversine)
-   da casa atual e dos pontos importantes, link de rota no Google Maps, marcar como repasse.
-3. Formulário de imóvel (colar link/texto) e edição.
-4. `/busca`: links pré-filtrados (OLX, Zap, VivaReal, Imóveis Caixa, Facebook Marketplace).
-5. `/mapa`: Leaflet + OpenStreetMap; geocodificação via Nominatim (1 req/s, cache).
-6. Navegação: "Imóveis" já está na barra inferior.
+1. Branch `feat/f5-checklists-inicio-pwa`.
+2. `/guias`: checklists (documentos por tipo de renda, conferir o imóvel, limpar o nome, caminho da
+   Faixa 1 pela prefeitura com anotações) usando `ListaVerificacao` e `src/lib/dominio/checklists.ts`.
+3. Tela inicial completa: semáforo, preço máximo, nº de imóveis que cabem, próximo passo.
+4. PWA: `src/app/manifest.ts`, ícones PNG, service worker simples; instalável no Windows e celular.
+5. Estados de carregando/vazio/erro revisados; `error.tsx` global.
