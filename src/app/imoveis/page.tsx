@@ -1,15 +1,193 @@
-import { BotaoLink, EstadoVazio, TituloPagina } from "@/components/ui";
+"use client";
+
+import { useMemo, useState } from "react";
+import { CampoMarcar, CampoSelecao } from "@/components/campos";
+import { CartaoImovel, SeloOrcamento } from "@/components/imoveis/CartaoImovel";
+import { FormImovel } from "@/components/imoveis/FormImovel";
+import {
+  AvisoCalculo,
+  Botao,
+  BotaoLink,
+  Carregando,
+  EstadoVazio,
+  TituloPagina,
+  confirmar,
+} from "@/components/ui";
+import { useDiagnostico, useEstadoFamilia, useQuem } from "@/lib/armazenamento/hooks";
+import { atualizarEstado } from "@/lib/armazenamento/loja";
+import {
+  imovelEmBranco,
+  NOMES_STATUS_IMOVEL,
+  STATUS_IMOVEL,
+  type Imovel,
+} from "@/lib/dominio/esquemas";
+import { avaliarImovelSalvo, ordenarImoveis, type Ordenacao } from "@/lib/dominio/imoveis";
+import { avaliarImovel } from "@/lib/financiamento/orcamento";
+import { formatarMoeda, formatarMoedaInteira } from "@/lib/formatar";
+
+type FiltroStatus = "ativos" | "todos" | Imovel["status"];
+const OPCOES_STATUS: Record<FiltroStatus, string> = {
+  ativos: "Todos menos descartados",
+  todos: "Todos",
+  ...Object.fromEntries(STATUS_IMOVEL.map((s) => [s, NOMES_STATUS_IMOVEL[s]])),
+} as Record<FiltroStatus, string>;
+const OPCOES_ORDEM: Record<Ordenacao, string> = {
+  orcamento: "Cabe no orçamento primeiro",
+  preco: "Menor preço",
+  distancia: "Mais perto da casa atual",
+  recentes: "Adicionados por último",
+};
 
 export default function PaginaImoveis() {
+  const estado = useEstadoFamilia();
+  const diagnostico = useDiagnostico(estado);
+  const quem = useQuem();
+  const [editando, setEditando] = useState<Imovel | null>(null);
+  const [filtro, setFiltro] = useState<FiltroStatus>("ativos");
+  const [soCabem, setSoCabem] = useState(false);
+  const [ordem, setOrdem] = useState<Ordenacao>("orcamento");
+
+  const avaliados = useMemo(
+    () =>
+      estado && diagnostico
+        ? estado.imoveis.map((i) => avaliarImovelSalvo(i, diagnostico, estado.preferencias))
+        : [],
+    [estado, diagnostico],
+  );
+
+  if (!estado || !diagnostico) return <Carregando />;
+  const referencia = diagnostico.melhor ?? diagnostico.potencial;
+
+  if (editando) {
+    const existe = estado.imoveis.some((i) => i.id === editando.id);
+    return (
+      <>
+        <TituloPagina>{existe ? "Editar imóvel" : "Novo imóvel"}</TituloPagina>
+        <FormImovel
+          inicial={editando}
+          aoCancelar={() => setEditando(null)}
+          previa={(preco) =>
+            referencia && (
+              <div className="mb-4">
+                <SeloOrcamento cor={avaliarImovel(preco, referencia.resultado).cor} />
+                <p className="mt-1 text-gray-700">
+                  Parcela estimada:{" "}
+                  {formatarMoeda(avaliarImovel(preco, referencia.resultado).parcelaEstimada)}
+                </p>
+              </div>
+            )
+          }
+          aoSalvar={(imovel) => {
+            const final = existe
+              ? imovel
+              : { ...imovel, criadoPor: quem || "Alguém", criadoEm: new Date().toISOString() };
+            atualizarEstado(
+              existe ? `Editou o imóvel "${imovel.titulo}"` : `Salvou o imóvel "${imovel.titulo}"`,
+              (e) => ({
+                ...e,
+                imoveis: existe
+                  ? e.imoveis.map((i) => (i.id === imovel.id ? final : i))
+                  : [...e.imoveis, final],
+              }),
+            );
+            setEditando(null);
+          }}
+        />
+      </>
+    );
+  }
+
+  const visiveis = ordenarImoveis(
+    avaliados.filter(
+      (a) =>
+        (filtro === "todos" ||
+          (filtro === "ativos" ? a.imovel.status !== "descartado" : a.imovel.status === filtro)) &&
+        (!soCabem || a.avaliacao?.cor === "verde"),
+    ),
+    ordem,
+  );
+  const quantosCabem = avaliados.filter(
+    (a) => a.avaliacao?.cor === "verde" && a.imovel.status !== "descartado",
+  ).length;
+  const mudarImovel = (id: string) => (descricao: string, mudancas: Partial<Imovel>) =>
+    atualizarEstado(descricao, (e) => ({
+      ...e,
+      imoveis: e.imoveis.map((i) => (i.id === id ? { ...i, ...mudancas } : i)),
+    }));
+
   return (
     <>
-      <TituloPagina>Imóveis</TituloPagina>
-      <EstadoVazio titulo="Em construção">
-        A lista de imóveis salvos, a busca guiada e o mapa chegam na próxima etapa.
-      </EstadoVazio>
-      <BotaoLink href="/simulador" className="mt-4 w-full">
-        Ver quanto dá para comprar
-      </BotaoLink>
+      <TituloPagina
+        subtitulo={
+          referencia
+            ? `Comparando com "${referencia.nome}": até ${formatarMoedaInteira(referencia.resultado.precoMaximo.SAC)}${diagnostico.melhor ? "" : " (depois de limpar o nome)"}.`
+            : "Cadastre quem tem renda em Situação para comparar com o orçamento."
+        }
+      >
+        Imóveis salvos
+      </TituloPagina>
+      <AvisoCalculo />
+      <div className="mb-4 grid grid-cols-1 gap-2 sm:grid-cols-3">
+        <Botao onClick={() => setEditando(imovelEmBranco())}>+ Adicionar imóvel</Botao>
+        <BotaoLink href="/busca" variante="secundario">
+          🔎 Buscar nos sites
+        </BotaoLink>
+        <BotaoLink href="/mapa" variante="secundario">
+          🗺️ Ver no mapa
+        </BotaoLink>
+      </div>
+
+      {estado.imoveis.length === 0 ? (
+        <EstadoVazio titulo="Nenhum imóvel salvo ainda">
+          Use “Buscar nos sites” para achar anúncios e depois “Adicionar imóvel” colando o link ou o
+          texto do anúncio.
+        </EstadoVazio>
+      ) : (
+        <>
+          <p className="mb-3 text-lg">
+            <strong>{quantosCabem}</strong> de {estado.imoveis.length} cabem no orçamento.
+          </p>
+          <details className="mb-4 rounded-2xl border-2 border-gray-200 bg-white p-3">
+            <summary className="min-h-12 cursor-pointer py-2 text-lg font-semibold">
+              Filtrar e ordenar
+            </summary>
+            <CampoSelecao
+              rotulo="Mostrar"
+              valor={filtro}
+              opcoes={OPCOES_STATUS}
+              aoMudar={setFiltro}
+            />
+            <CampoMarcar
+              rotulo="Só os que cabem no orçamento"
+              marcado={soCabem}
+              aoMudar={setSoCabem}
+            />
+            <CampoSelecao
+              rotulo="Ordenar por"
+              valor={ordem}
+              opcoes={OPCOES_ORDEM}
+              aoMudar={setOrdem}
+            />
+          </details>
+          {visiveis.length === 0 && <EstadoVazio titulo="Nenhum imóvel com esses filtros" />}
+          {visiveis.map((dados) => (
+            <CartaoImovel
+              key={dados.imovel.id}
+              dados={dados}
+              preferencias={estado.preferencias}
+              aoEditar={() => setEditando(dados.imovel)}
+              aoMudar={mudarImovel(dados.imovel.id)}
+              aoRemover={() => {
+                if (!confirmar(`Remover "${dados.imovel.titulo}"?`)) return;
+                atualizarEstado(`Removeu o imóvel "${dados.imovel.titulo}"`, (e) => ({
+                  ...e,
+                  imoveis: e.imoveis.filter((i) => i.id !== dados.imovel.id),
+                }));
+              }}
+            />
+          ))}
+        </>
+      )}
     </>
   );
 }
