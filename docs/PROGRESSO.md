@@ -3,62 +3,80 @@
 > Atualize este arquivo ao fim de cada fase. Ele deve bastar para qualquer pessoa ou IA continuar o
 > trabalho sem o histórico do chat. Pedido completo: `docs/PROMPT-ORIGINAL.md`.
 
-Última atualização: 14/11/2026 — Fase 0.
+Última atualização: 14/11/2026 — Fase 1 concluída.
 
-## Situação das fases
+## Ordem de execução combinada com o dono (14/11/2026)
 
-| Fase | Conteúdo                                                        | Situação     |
-| ---- | --------------------------------------------------------------- | ------------ |
-| 0    | Setup: Next.js, TS, Tailwind, Vitest, ESLint/Prettier, CI, docs | Concluída    |
-| 1    | Motor de cálculo (`regras-mcmv.ts` + funções + testes)          | Não iniciada |
-| 2    | F1, F2, F3, F11, F12 com localStorage                           | Não iniciada |
-| 3    | Supabase + login + família + RLS (F9)                           | Não iniciada |
-| 4    | Imóveis salvos, busca guiada, mapa (F4, F5, F6)                 | Não iniciada |
-| 5    | Checklists, tela inicial, PWA (F8, F10)                         | Não iniciada |
-| 6    | Gemini (F7)                                                     | Não iniciada |
-| 7    | Deploy final na Vercel + revisão geral                          | Não iniciada |
+O dono pediu para executar tudo em sequência, sem parar entre fases, fazendo primeiro o que não
+depende de contas externas:
 
-## O que está pronto (Fase 0)
+| Ordem | Fase | Conteúdo                                                                     | Situação     |
+| ----- | ---- | ---------------------------------------------------------------------------- | ------------ |
+| 1     | 0    | Setup: Next.js, TS, Tailwind, Vitest, ESLint/Prettier, CI, docs              | Concluída    |
+| 2     | 1    | Motor de cálculo (`regras-mcmv.ts` + funções + testes)                       | Concluída    |
+| 3     | 2    | F1, F2, F3, F11, F12 com localStorage                                        | Não iniciada |
+| 4     | 4    | F4 busca guiada, F5 imóveis salvos, F6 mapa (localStorage)                   | Não iniciada |
+| 5     | 5    | F8 checklists, F10 tela inicial, PWA instalável (Windows e celular)          | Não iniciada |
+| 6     | 3    | Supabase + login + família + RLS (F9) — código pronto + passo a passo        | Não iniciada |
+| 7     | 6    | Gemini (F7) — código pronto + passo a passo da chave                         | Não iniciada |
+| 8     | 7    | Deploy Vercel + revisão geral — passo a passo                                | Não iniciada |
+| 9     | 8    | Executável Windows (Tauri) gerado no GitHub Actions e publicado numa Release | Não iniciada |
+
+Regras combinadas: se o CI falhar, investigar e corrigir; valores do MCMV em dúvida ficam
+configuráveis e marcados "A CONFIRMAR"; **nunca** colocar atribuição de IA em commits/PRs/código.
+
+## Fase 0 — Setup (pronto)
 
 - Next.js 16.4 (App Router, `src/`), React 19.3, TypeScript strict + `noUncheckedIndexedAccess`.
-- Tailwind 4 (via `@tailwindcss/turbopack`, sem `postcss.config`), CSS base mobile-first com fonte
-  18px e foco visível.
-- Layout em `pt-BR` com aviso fixo "Simulações são estimativas..." (`src/components/AvisoEstimativa.tsx`).
-- Página inicial provisória (`src/app/page.tsx`).
-- Vitest (ambiente Node, alias `@/`) — primeiro teste em `src/lib/formatar.test.ts`.
-- Playwright configurado só para CI (`playwright.config.ts`, perfil de celular Pixel 7) com teste de
-  fumaça em `e2e/inicio.spec.ts`.
-- ESLint (config do Next + Prettier), Prettier, `.gitattributes` forçando LF.
-- CI em `.github/workflows/ci.yml`: job `qualidade` (lint, format:check, typecheck, unitários) e job
+- Tailwind 4 (via `@tailwindcss/turbopack`, sem `postcss.config`), CSS base mobile-first (fonte 18px,
+  foco visível). Layout pt-BR com aviso fixo de estimativa (`src/components/AvisoEstimativa.tsx`).
+- Vitest (ambiente Node, alias `@/`); Playwright só no CI (perfil Pixel 7), teste em `e2e/`.
+- CI `.github/workflows/ci.yml`: job `qualidade` (lint, format:check, typecheck, unitários) e job
   `build-e2e` (build + Playwright Chromium).
-- `.env.example` com as variáveis futuras (Supabase, Gemini, Nominatim).
-- Guias para IA: `CLAUDE.md` (fonte), `AGENTS.md` e `GEMINI.md` (cópias via
-  `npm run sincronizar-guias`).
+- `.claude/settings.json`: libera npm/npx/git/gh e desliga atribuição do Claude Code.
+
+## Fase 1 — Motor de cálculo (pronto)
+
+- `src/config/regras-mcmv.ts`: todas as regras, com data de referência (22/04/2026) e fontes.
+  Confirmado em fontes públicas: faixas de renda (Portaria MCID 333/2026), teto de subsídio
+  R$ 55 mil, tetos F3 R$ 400 mil / F4 R$ 600 mil, regra 80 anos e 6 meses, prazo 420 meses.
+  **A CONFIRMAR** (marcados no arquivo): juros exatos por faixa, teto F1/F2 (R$ 275 mil), cota
+  de financiamento (80%), tabela do seguro MIP, taxa de administração (R$ 25), curva do subsídio,
+  prazo mínimo (60 meses), dias para o score atualizar (30), aceitação de jovem aprendiz.
+- `src/lib/financiamento/` (funções puras, sem dados da família):
+  - `basico.ts`: idade, prazo pela idade do mais velho, faixa, MIP, subsídio, meses para juntar.
+  - `sistemas.ts`: SAC/Price — valor financiável pela parcela, 1ª parcela, evolução, empréstimo.
+  - `capacidade.ts`: `calcularCenario()` → preço máximo (SAC/Price), impedimentos e avisos.
+    Preço máximo = menor entre (financiável + subsídio + FGTS + dinheiro), (recursos ÷ (1 − cota))
+    e teto da faixa.
+  - `orcamento.ts`: `avaliarImovel()` (cor verde/amarelo/vermelho, entrada que falta, parcela,
+    renda necessária), custo total de compra, custo de repasse.
+- `src/lib/dominio/`:
+  - `esquemas.ts`: Zod de tudo que é salvo (`EstadoFamilia`: pessoas, recusas, dinheiro,
+    preferências, imóveis, checklists, histórico). Campos novos devem ter `.default()`.
+  - `cenarios.ts`: renda na data (contrato que termina zera a renda), situação do CPF (negativado →
+    aguardando score → limpo), geração automática de cenários (cada pessoa, duplas, todos),
+    melhor cenário, mudanças futuras.
+  - `dados-iniciais.ts`: exemplo da família (pai 61 anos, R$ 1.950 CLT, negativado; mãe 61 sem
+    renda; Danielle 19, jovem aprendiz R$ 950 até 31/01/2027; 1 recusa de R$ 140 mil).
+- 66 testes Vitest cobrindo todos os casos da seção 7 do prompt.
 
 ## Decisões tomadas
 
-- **Next 16 com `cacheComponents: true`** (padrão do template). Componentes que leem dados dinâmicos
-  (cookies do Supabase etc.) precisarão de `<Suspense>`. Consultar `node_modules/next/dist/docs/`.
-- `@types/node` 24 (o Vitest 5 exige ≥ 22; Node local e CI usam 24 via `.nvmrc`).
-- Fonte do sistema em vez de Google Fonts (sem download no build, mais leve no celular).
-- Vitest em ambiente `node` (a lógica é pura). Se no futuro precisar testar componentes, adicionar
-  `jsdom` + Testing Library só onde for necessário.
-- Build não é rodado localmente (notebook fraco) — o CI faz.
-- `package-lock.json` é commitado (o CI usa `npm ci`).
+- **Juros nominais ÷ 12** para a taxa mensal (como a Caixa divulga).
+- **Preço máximo "oficial" usa SAC** (mais conservador); Price aparece como alternativa.
+- **Renda familiar** (define faixa e subsídio) = renda de todos que vão morar, comprovada ou não.
+  **Renda para a parcela** = só renda comprovada dos compradores do cenário.
+- Quem já tem imóvel no nome → cenário calculado "fora do MCMV" (juros maiores, sem subsídio).
+- Next 16 com `cacheComponents: true` (padrão do template) — rever na Fase 2.
+- `@types/node` 24 (Vitest 5 exige ≥ 22); fonte do sistema (sem Google Fonts).
+- Build e E2E não rodam localmente (notebook fraco) — o CI faz.
 
-## Pendências / avisos
+## Próximos passos (Fase 2 — telas com localStorage)
 
-- O `gh` (GitHub CLI) precisa estar instalado e autenticado na máquina para o fluxo de PR.
-
-## Próximos passos (Fase 1 — Motor de cálculo)
-
-1. Branch `feat/f1-motor-calculo`.
-2. Criar `src/config/regras-mcmv.ts` com: faixas de renda, teto de subsídio e fórmula decrescente,
-   teto do imóvel por faixa, juros por faixa, idade máxima (80 anos e 6 meses), prazo máximo (420
-   meses), comprometimento (30%), tabela MIP por faixa etária, taxa de administração, regra FGTS
-   (3 anos). Cada valor com data de referência e fonte em comentário.
-3. Funções puras em `src/lib/financiamento/`: idade, prazo máximo pelo mais velho, enquadramento de
-   faixa, parcela máxima, valor financiável SAC/Price (descontando MIP e taxa), subsídio estimado,
-   preço máximo do imóvel, viabilidade por proponente (CPF, renda), quanto falta para um imóvel,
-   tabela de evolução de parcelas.
-4. Testes Vitest com os casos da seção 7 do prompt.
+1. Branch `feat/f2-situacao-diagnostico-simulador`.
+2. Armazenamento local: hook/contexto `useFamilia()` que lê/grava `EstadoFamilia` no localStorage
+   (validado por `lerEstado`), carrega `dadosIniciais()` no 1º uso, registra histórico de mudanças.
+3. Telas: Nossa situação (pessoas, recusas, dinheiro, preferências), Diagnóstico (semáforo +
+   bloqueios + o que fazer), Simulador (cenários, "e se", tabela de parcelas), Repasse, Empréstimo.
+4. Navegação inferior para celular.
