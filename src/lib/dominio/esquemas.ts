@@ -336,3 +336,11 @@ export function novoId(): string {
   if (typeof crypto !== "undefined" && "randomUUID" in crypto) return crypto.randomUUID();
   return Math.random().toString(36).slice(2) + Date.now().toString(36);
 }
+
+/** Rascunho de pessoa para o formulário (nome vazio: só é validado ao salvar). */
+export function pessoaEmBranco(): Pessoa {
+  return {
+    ...esquemaPessoa.parse({ id: novoId(), nome: "rascunho", dataNascimento: "2000-01-01" }),
+    nome: "",
+  };
+}

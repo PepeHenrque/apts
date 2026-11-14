@@ -10,7 +10,14 @@ import {
   situacaoCpfNaData,
 } from "./cenarios";
 import { dadosIniciais, ID_FILHA, ID_MAE, ID_PAI } from "./dados-iniciais";
-import { esquemaImovel, esquemaPessoa, estadoVazio, lerEstado, type Pessoa } from "./esquemas";
+import {
+  esquemaImovel,
+  esquemaPessoa,
+  estadoVazio,
+  lerEstado,
+  pessoaEmBranco,
+  type Pessoa,
+} from "./esquemas";
 
 const HOJE = lerDataIso("2026-11-14")!;
 
@@ -48,6 +55,13 @@ describe("validação (Zod)", () => {
   it("imóvel precisa de título e preço", () => {
     expect(esquemaImovel.safeParse({ id: "i", titulo: "Apto", preco: 0 }).success).toBe(false);
     expect(esquemaImovel.safeParse({ id: "i", titulo: "Apto", preco: 140000 }).success).toBe(true);
+  });
+
+  it("rascunho de pessoa nova abre sem erro e só falha ao salvar sem nome", () => {
+    const rascunho = pessoaEmBranco();
+    expect(rascunho.nome).toBe("");
+    expect(esquemaPessoa.safeParse(rascunho).success).toBe(false);
+    expect(esquemaPessoa.safeParse({ ...rascunho, nome: "Ana" }).success).toBe(true);
   });
 
   it("estado salvo é lido com segurança", () => {

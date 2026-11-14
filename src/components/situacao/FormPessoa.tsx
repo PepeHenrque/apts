@@ -21,10 +21,6 @@ import {
 import { idadeEmAnos } from "@/lib/financiamento/basico";
 import { REGRAS } from "@/config/regras-mcmv";
 
-export function pessoaEmBranco(): Pessoa {
-  return esquemaPessoa.parse({ id: novoId(), nome: "", dataNascimento: "2000-01-01" });
-}
-
 export function FormPessoa({
   inicial,
   aoSalvar,

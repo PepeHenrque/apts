@@ -1,13 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { FormPessoa, pessoaEmBranco } from "@/components/situacao/FormPessoa";
+import { FormPessoa } from "@/components/situacao/FormPessoa";
 import { Botao, Cartao, Carregando, EstadoVazio, Selo, confirmar } from "@/components/ui";
 import { useEstadoFamilia } from "@/lib/armazenamento/hooks";
 import { atualizarEstado } from "@/lib/armazenamento/loja";
 import { hoje } from "@/lib/datas";
 import { rendaNaData, situacaoCpfNaData } from "@/lib/dominio/cenarios";
-import { NOMES_SITUACAO, type Pessoa } from "@/lib/dominio/esquemas";
+import { NOMES_SITUACAO, pessoaEmBranco, type Pessoa } from "@/lib/dominio/esquemas";
 import { descreverMudancasPessoa } from "@/lib/dominio/historico";
 import { idadeEmAnos } from "@/lib/financiamento/basico";
 import { formatarData, formatarMoeda } from "@/lib/formatar";
