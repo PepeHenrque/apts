@@ -99,7 +99,9 @@ docs/
   GEMINI.md               Passo a passo da chave do Gemini (opcional)
   VERCEL.md               Passo a passo para publicar na Vercel
   PROMPT-ORIGINAL.md      Pedido completo do projeto
-.github/workflows/ci.yml  CI: lint, format, typecheck, unitários, build, E2E
+.github/workflows/ci.yml  CI: lint, format, typecheck, unitários, build, E2E, RLS, site estático
+.github/workflows/windows.yml  Gera o instalador .exe (Tauri) e publica numa Release
+src-tauri/                App de Windows (Tauri 2) — só compila no GitHub Actions
 ```
 
 ## Regras de negócio (resumo — os valores ficam em `src/config/regras-mcmv.ts`)
@@ -135,6 +137,7 @@ docs/
 | F8 Checklists (pronto)                 | `src/app/guias`, `src/lib/dominio/checklists.ts`                                                     | 5    |
 | F10 Tela inicial / PWA (pronto)        | `src/app/page.tsx`, `src/app/manifest.ts`, `public/sw.js`, `src/components/Pwa.tsx`                  | 5    |
 | F7 Gemini (código pronto)              | `src/lib/ia/`, `src/app/api/ia/`, `src/components/ia/Ia.tsx`                                         | 6    |
+| App de Windows (pronto)                | `src-tauri/`, `.github/workflows/windows.yml`                                                        | 8    |
 
 (Atualize esta tabela sempre que criar uma funcionalidade.)
 
