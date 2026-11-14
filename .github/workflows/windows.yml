@@ -1,0 +1,84 @@
+name: App Windows
+
+# Gera o instalador .exe do app de Windows (Tauri) e publica numa Release do GitHub.
+# Roda só aqui no GitHub (runner Windows) — nada é compilado no computador do desenvolvedor.
+#
+# Como disparar:
+#   - Actions → "App Windows" → "Run workflow"; ou
+#   - criar uma tag de versão: git tag v0.2.0 && git push origin v0.2.0
+#     (a versão do app vem do package.json — atualize lá antes).
+#
+# Opcional (Settings → Secrets and variables → Actions → aba "Variables"):
+#   NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY → app de Windows com login da família
+#   NEXT_PUBLIC_URL_API (ex.: https://apts-xxxx.vercel.app) → IA usando o servidor da Vercel
+
+on:
+  workflow_dispatch:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: app-windows-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  windows:
+    name: Instalador Windows (.exe)
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri -> target
+
+      - run: npm ci
+
+      - name: Remove as rotas de API (o app de Windows não tem servidor)
+        shell: pwsh
+        run: Remove-Item -Recurse -Force src/app/api
+
+      - name: Gera o site estático (pasta out/)
+        run: npm run build
+        env:
+          EXPORTAR_ESTATICO: "1"
+          NEXT_PUBLIC_DESKTOP: "1"
+          NEXT_PUBLIC_SUPABASE_URL: ${{ vars.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ vars.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          NEXT_PUBLIC_URL_API: ${{ vars.NEXT_PUBLIC_URL_API }}
+
+      - name: Gera os ícones do app
+        run: npx --yes @tauri-apps/cli@2 icon public/icones/icone-512.png
+
+      - name: Compila e publica na Release
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tauriScript: npx --yes @tauri-apps/cli@2
+          args: --bundles nsis
+          tagName: v__VERSION__
+          releaseName: "apts v__VERSION__ (Windows)"
+          releaseBody: |
+            Instalador do **apts** para Windows.
+
+            1. Baixe o arquivo `apts_..._x64-setup.exe` abaixo (em **Assets**).
+            2. Abra o arquivo. Como o app não é assinado digitalmente, o Windows mostra
+               **"O Windows protegeu o computador"**: clique em **Mais informações** →
+               **Executar assim mesmo**.
+            3. Siga o instalador. O app aparece no menu Iniciar como **apts**.
+
+            Os dados ficam neste computador (ou na família, se o login estiver configurado).
+            Simulações são estimativas — confirme com a Caixa.
+          releaseDraft: false
+          prerelease: false
