@@ -47,7 +47,7 @@ export default function MapaLeaflet({ pontos }: { pontos: PontoMapa[] }) {
     <MapContainer
       {...props}
       scrollWheelZoom
-      className="h-[60vh] w-full rounded-2xl border-2 border-gray-300"
+      className="h-[60vh] w-full rounded-md border border-borda"
     >
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
@@ -63,13 +63,13 @@ export default function MapaLeaflet({ pontos }: { pontos: PontoMapa[] }) {
         >
           <Popup>
             <div className="text-base">
-              <p className="font-bold">{p.titulo}</p>
+              <p className="font-semibold">{p.titulo}</p>
               {p.preco !== undefined && <p>{formatarMoedaInteira(p.preco)}</p>}
               {p.textoCor && <p>{p.textoCor}</p>}
               {p.tipo === "imovel" && (
                 <Link
                   href={`/imoveis#imovel-${p.id}`}
-                  className="font-semibold text-blue-800 underline"
+                  className="font-semibold text-primaria underline"
                 >
                   Ver detalhes
                 </Link>

@@ -48,7 +48,7 @@ async function postar<T>(caminho: string, corpo: unknown): Promise<T> {
   return json;
 }
 
-/** Botão "Preencher com IA" do formulário de imóvel. */
+/** Botão "Preencher automaticamente" do formulário de imóvel. */
 export function BotaoPreencherIA({
   texto,
   aoPreencher,
@@ -80,14 +80,14 @@ export function BotaoPreencherIA({
           }
         }}
       >
-        ✨ {carregando ? "Lendo o anúncio…" : "Preencher com IA"}
+        {carregando ? "Lendo o anúncio…" : "Preencher automaticamente"}
       </Botao>
       {erro && (
-        <p role="alert" className="mt-1 font-semibold text-red-800">
+        <p role="alert" className="mt-1 font-semibold text-erro">
           {erro}
         </p>
       )}
-      <p className="mt-1 text-sm text-gray-700">
+      <p className="mt-1 text-sm text-texto-2">
         Só o texto do anúncio é enviado ao Google Gemini (nunca nomes, CPF, rendas ou dívidas da
         família).
       </p>
@@ -109,8 +109,8 @@ export function ExplicarSituacao({
   const [carregando, setCarregando] = useState(false);
   if (!ok) return null;
   return (
-    <Cartao titulo="Explicação em linguagem simples (IA)">
-      <p className="mb-3 text-gray-800">
+    <Cartao titulo="Explicação em linguagem simples">
+      <p className="mb-3 text-texto-2">
         Enviamos ao Google Gemini só números (idades, rendas, tipos de bloqueio), sem nomes nem
         dados de dívidas.
       </p>
@@ -134,10 +134,10 @@ export function ExplicarSituacao({
           }
         }}
       >
-        ✨ {carregando ? "Pensando…" : "Explicar minha situação"}
+        {carregando ? "Preparando a explicação…" : "Explicar a nossa situação"}
       </Botao>
       {erro && <Aviso tipo="alerta">{erro}</Aviso>}
-      {texto && <p className="mt-3 text-lg whitespace-pre-line">{texto}</p>}
+      {texto && <p className="mt-3 whitespace-pre-line">{texto}</p>}
     </Cartao>
   );
 }

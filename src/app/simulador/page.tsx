@@ -63,6 +63,55 @@ export default function PaginaSimulador() {
     setAjustes((atual) => ({ ...atual, [id]: { ...atual[id], ...dados } }));
   const cenarioParcelas = calculo.cenarios.find((c) => c.id === parcelasDe) ?? null;
 
+  const formulario = (
+    <>
+      <CampoData
+        rotulo="Simular na data"
+        ajuda="Deixe vazio para hoje. Ex.: depois do fim de um contrato."
+        valor={dataSimulacao}
+        aoMudar={setDataSimulacao}
+      />
+      {compradores.map((p) => {
+        const a = ajustes[p.id] ?? {};
+        return (
+          <fieldset key={p.id} className="mb-3 rounded-md border border-borda bg-white p-3">
+            <legend className="px-1 font-semibold">{p.nome}</legend>
+            <CampoSelecao
+              rotulo="Trabalho"
+              valor={a.situacao ?? p.emprego.situacao}
+              opcoes={NOMES_SITUACAO}
+              aoMudar={(situacao) => mudar(p.id, { situacao })}
+            />
+            <CampoNumero
+              rotulo="Salário bruto"
+              moeda
+              valor={a.salario ?? p.emprego.salarioBruto}
+              aoMudar={(salario) => mudar(p.id, { salario })}
+            />
+            {p.cpf.negativado && (
+              <CampoMarcar
+                rotulo="E se limpar o nome?"
+                marcado={a.nomeLimpo ?? false}
+                aoMudar={(nomeLimpo) => mudar(p.id, { nomeLimpo })}
+              />
+            )}
+          </fieldset>
+        );
+      })}
+      {temAjustes && (
+        <Botao
+          variante="secundario"
+          onClick={() => {
+            setAjustes({});
+            setDataSimulacao("");
+          }}
+        >
+          Voltar para a situação real
+        </Botao>
+      )}
+    </>
+  );
+
   return (
     <>
       <TituloPagina subtitulo="Cada combinação de compradores muda o prazo, a parcela e o preço máximo.">
@@ -70,94 +119,62 @@ export default function PaginaSimulador() {
       </TituloPagina>
       <AvisoCalculo />
 
-      <details
-        className="mb-4 rounded-2xl border-2 border-blue-300 bg-blue-50 p-4"
-        open={temAjustes}
-      >
-        <summary className="min-h-12 cursor-pointer text-xl font-bold text-blue-900">
-          E se…? (testar mudanças sem salvar)
-        </summary>
-        <div className="mt-3">
-          <CampoData
-            rotulo="Simular na data"
-            ajuda="Deixe vazio para hoje. Ex.: depois do fim de um contrato."
-            valor={dataSimulacao}
-            aoMudar={setDataSimulacao}
-          />
-          {compradores.map((p) => {
-            const a = ajustes[p.id] ?? {};
-            return (
-              <fieldset
-                key={p.id}
-                className="mb-3 rounded-xl border-2 border-blue-200 bg-white p-3"
-              >
-                <legend className="px-1 text-lg font-bold">{p.nome}</legend>
-                <CampoSelecao
-                  rotulo="Trabalho"
-                  valor={a.situacao ?? p.emprego.situacao}
-                  opcoes={NOMES_SITUACAO}
-                  aoMudar={(situacao) => mudar(p.id, { situacao })}
-                />
-                <CampoNumero
-                  rotulo="Salário bruto"
-                  moeda
-                  valor={a.salario ?? p.emprego.salarioBruto}
-                  aoMudar={(salario) => mudar(p.id, { salario })}
-                />
-                {p.cpf.negativado && (
-                  <CampoMarcar
-                    rotulo="E se limpar o nome?"
-                    marcado={a.nomeLimpo ?? false}
-                    aoMudar={(nomeLimpo) => mudar(p.id, { nomeLimpo })}
-                  />
-                )}
-              </fieldset>
-            );
-          })}
-          {temAjustes && (
-            <Botao
-              variante="secundario"
-              onClick={() => {
-                setAjustes({});
-                setDataSimulacao("");
-              }}
-            >
-              Voltar para a situação real
-            </Botao>
-          )}
+      <div className="lg:grid lg:grid-cols-[minmax(0,21rem)_minmax(0,1fr)] lg:items-start lg:gap-8">
+        <div className="lg:sticky lg:top-6 lg:max-h-[calc(100vh-4rem)] lg:overflow-y-auto">
+          <details
+            className="mb-4 rounded-md border border-borda bg-superficie p-4 lg:hidden"
+            open={temAjustes}
+          >
+            <summary className="min-h-11 cursor-pointer font-semibold text-primaria">
+              E se…? Testar mudanças sem salvar
+            </summary>
+            <div className="mt-3">{formulario}</div>
+          </details>
+          <section
+            aria-labelledby="titulo-e-se"
+            className="mb-4 hidden rounded-md border border-borda bg-superficie p-5 shadow-sutil lg:block"
+          >
+            <h2 id="titulo-e-se" className="text-lg font-semibold">
+              E se…?
+            </h2>
+            <p className="mb-4 text-sm text-texto-2">Teste mudanças sem alterar os dados salvos.</p>
+            {formulario}
+          </section>
         </div>
-      </details>
-
-      {temAjustes && (
-        <Aviso tipo="info" titulo="Você está vendo uma simulação “e se…”.">
-          {dataSimulacao && `Data simulada: ${formatarData(dataSimulacao)}. `}Os dados salvos não
-          foram alterados.
-        </Aviso>
-      )}
-
-      {compradores.length === 0 ? (
-        <EstadoVazio titulo="Ninguém marcado como possível comprador">
-          Em Situação → Pessoas, marque quem pode ser comprador.
-        </EstadoVazio>
-      ) : (
-        <>
-          {!calculo.melhor && (
-            <Aviso tipo="perigo" titulo="Nenhum cenário é aprovável com estes dados.">
-              Veja abaixo o motivo de cada um e o valor possível se os bloqueios forem resolvidos.
+        <div>
+          {temAjustes && (
+            <Aviso tipo="info" titulo="Você está vendo uma simulação “e se…”.">
+              {dataSimulacao && `Data simulada: ${formatarData(dataSimulacao)}. `}Os dados salvos
+              não foram alterados.
             </Aviso>
           )}
-          {calculo.cenarios.map((c) => (
-            <div key={c.id}>
-              <CartaoCenario
-                cenario={c}
-                ehMelhor={c.id === calculo.melhor?.id}
-                aoVerParcelas={() => setParcelasDe(parcelasDe === c.id ? null : c.id)}
-              />
-              {cenarioParcelas?.id === c.id && <TabelaParcelas cenario={cenarioParcelas} />}
-            </div>
-          ))}
-        </>
-      )}
+
+          {compradores.length === 0 ? (
+            <EstadoVazio titulo="Ninguém marcado como possível comprador">
+              Em Situação → Pessoas, marque quem pode ser comprador.
+            </EstadoVazio>
+          ) : (
+            <>
+              {!calculo.melhor && (
+                <Aviso tipo="perigo" titulo="Nenhum cenário é aprovável com estes dados.">
+                  Veja abaixo o motivo de cada um e o valor possível se os bloqueios forem
+                  resolvidos.
+                </Aviso>
+              )}
+              {calculo.cenarios.map((c) => (
+                <div key={c.id}>
+                  <CartaoCenario
+                    cenario={c}
+                    ehMelhor={c.id === calculo.melhor?.id}
+                    aoVerParcelas={() => setParcelasDe(parcelasDe === c.id ? null : c.id)}
+                  />
+                  {cenarioParcelas?.id === c.id && <TabelaParcelas cenario={cenarioParcelas} />}
+                </div>
+              ))}
+            </>
+          )}
+        </div>
+      </div>
     </>
   );
 }

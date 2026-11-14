@@ -9,7 +9,7 @@ import type { z } from "zod";
 import { formatarMoeda, lerNumero } from "@/lib/formatar";
 
 const CLASSE_ENTRADA =
-  "mt-1 block w-full min-h-12 rounded-xl border-2 border-gray-400 bg-white px-3 py-2 text-lg aria-[invalid=true]:border-red-600";
+  "mt-1.5 block w-full min-h-11 rounded-md border border-borda-forte bg-superficie px-3 py-2 text-base text-texto placeholder:text-texto-3 focus:border-primaria focus:outline-none focus:ring-2 focus:ring-primaria/20 aria-[invalid=true]:border-erro lg:min-h-10";
 
 interface BaseCampo {
   rotulo: ReactNode;
@@ -26,17 +26,17 @@ function Moldura({
 }: BaseCampo & { id: string; children: ReactNode }) {
   return (
     <div className="mb-4">
-      <label htmlFor={id} className="block text-lg font-semibold">
+      <label htmlFor={id} className="block font-medium">
         {rotulo}
       </label>
       {ajuda && (
-        <p id={`${id}-ajuda`} className="text-base text-gray-700">
+        <p id={`${id}-ajuda`} className="mt-0.5 text-sm text-texto-2">
           {ajuda}
         </p>
       )}
       {children}
       {erro && (
-        <p id={`${id}-erro`} role="alert" className="mt-1 font-semibold text-red-800">
+        <p id={`${id}-erro`} role="alert" className="mt-1 text-sm font-medium text-erro">
           {erro}
         </p>
       )}
@@ -149,9 +149,9 @@ export function CampoNumero({
           onBlur={() => setDigitando(null)}
           aria-invalid={erro ? true : undefined}
           aria-describedby={descritoPor(id, ajuda, erro)}
-          className={CLASSE_ENTRADA}
+          className={`${CLASSE_ENTRADA} numeros`}
         />
-        {sufixo && <span className="mt-1 text-lg text-gray-700">{sufixo}</span>}
+        {sufixo && <span className="mt-1 text-texto-2">{sufixo}</span>}
       </div>
     </Moldura>
   );
@@ -206,14 +206,14 @@ export function CampoMarcar({
         checked={marcado}
         onChange={(e) => aoMudar(e.target.checked)}
         aria-describedby={ajuda ? `${id}-ajuda` : undefined}
-        className="mt-1 h-7 w-7 shrink-0 accent-blue-700"
+        className="mt-0.5 h-6 w-6 shrink-0 accent-[#0b5563]"
       />
       <div>
-        <label htmlFor={id} className="text-lg font-semibold">
+        <label htmlFor={id} className="font-medium">
           {rotulo}
         </label>
         {ajuda && (
-          <p id={`${id}-ajuda`} className="text-base text-gray-700">
+          <p id={`${id}-ajuda`} className="mt-0.5 text-sm text-texto-2">
             {ajuda}
           </p>
         )}

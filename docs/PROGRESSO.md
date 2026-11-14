@@ -214,3 +214,28 @@ configuráveis e marcados "A CONFIRMAR"; **nunca** colocar atribuição de IA em
 - Notificações no PWA (ex.: quando o score já deve ter atualizado).
 - Assinatura digital do instalador de Windows (remove o aviso do SmartScreen; certificado pago).
 - CSP com nonce.
+
+---
+
+# Segunda fase (pedido em `docs/PROMPT-ETAPA-2.md`)
+
+Mesmas regras: tudo em sequência, um PR por etapa, CI verde, sem atribuição de IA, sem scraping,
+nada de dados pessoais para o Gemini, nada pesado no notebook.
+
+## 2.1 — Visual profissional (pronto)
+
+- Tokens em `src/app/globals.css` (`@theme`): cor principal azul-petróleo `#0b5563`
+  (`primaria`, `primaria-forte`, `primaria-suave`), neutros (`fundo`, `superficie`, `borda`,
+  `texto`, `texto-2`, `texto-3`), status (`ok`, `atencao`, `erro` + `-suave`). Verde/amarelo/
+  vermelho só para orçamento e alertas. Fonte base 17px no celular e 16px no computador.
+- Fonte Inter (`next/font` no `layout.tsx`), ícones `lucide-react` (tamanho 18, traço 1,75 —
+  constante `ICONE` em `ui.tsx`). Nenhum emoji na interface.
+- Componentes base em `src/components/ui.tsx` (Button/Botao, Card/Cartao, Badge/Selo,
+  PageHeader/TituloPagina com ajuda recolhível, EmptyState/EstadoVazio, Aviso, Valor,
+  NumeroDestaque, LinkExterno) e `campos.tsx` (Input/Select/Checkbox). Dialog e Toast:
+  `src/lib/feedback.ts` (`await confirmar(...)`, `avisar(...)`) + `src/components/Feedback.tsx`.
+- Layout: barra lateral fixa no computador (`BarraLateral`), barra inferior no celular,
+  container de 1120px; itens em `src/components/navegacao.ts`. Simulador em duas colunas
+  (formulário "E se…" fixo à esquerda). Listas em grade de 2 colunas no computador.
+- Capturas de tela (390/768/1440 px) de 12 telas: artefato **`capturas-telas`** de cada execução
+  do CI (Actions → execução → Artifacts). Antes: execução 43619216178. Depois: as seguintes.

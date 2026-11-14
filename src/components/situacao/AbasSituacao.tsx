@@ -14,8 +14,11 @@ const ABAS = [
 export function AbasSituacao() {
   const caminho = usePathname().replace(/(.)\/$/, "$1");
   return (
-    <nav aria-label="Partes da situação" className="mb-5 -mx-4 overflow-x-auto px-4">
-      <ul className="flex gap-2">
+    <nav
+      aria-label="Partes da situação"
+      className="mb-6 -mx-4 overflow-x-auto px-4 sm:mx-0 sm:px-0"
+    >
+      <ul className="flex gap-1 border-b border-borda">
         {ABAS.map((aba) => {
           const ativa = caminho === aba.href;
           return (
@@ -23,10 +26,10 @@ export function AbasSituacao() {
               <Link
                 href={aba.href}
                 aria-current={ativa ? "page" : undefined}
-                className={`inline-flex min-h-12 items-center rounded-full border-2 px-4 font-semibold whitespace-nowrap ${
+                className={`-mb-px inline-flex min-h-11 items-center border-b-2 px-3 whitespace-nowrap ${
                   ativa
-                    ? "border-blue-700 bg-blue-700 text-white"
-                    : "border-gray-300 bg-white text-gray-900"
+                    ? "border-primaria font-medium text-primaria"
+                    : "border-transparent text-texto-2 hover:text-texto"
                 }`}
               >
                 {aba.rotulo}

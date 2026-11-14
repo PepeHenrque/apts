@@ -39,7 +39,7 @@ export default function PaginaRepasse() {
       </TituloPagina>
 
       <Cartao titulo="O que é repasse?">
-        <p className="text-lg">
+        <p className="">
           É quando alguém que está pagando um financiamento “passa” o imóvel para você. Você paga ao
           vendedor um valor pelo que ele já pagou (o <strong>ágio</strong>) e assume as parcelas que
           faltam.
@@ -49,7 +49,7 @@ export default function PaginaRepasse() {
           não é seu de verdade: se ele morrer, tiver dívidas ou agir de má-fé, vocês podem perder o
           imóvel e o dinheiro.
         </Aviso>
-        <p className="text-lg">
+        <p className="">
           O caminho seguro é a <strong>transferência formal</strong> do financiamento no banco. Para
           isso o banco <strong>analisa o crédito de quem compra</strong> — ou seja, nome sujo também
           bloqueia o repasse.
@@ -89,8 +89,8 @@ export default function PaginaRepasse() {
         />
 
         <div className="grid gap-4 sm:grid-cols-2">
-          <div className="rounded-xl border-2 border-gray-300 p-3">
-            <h3 className="text-lg font-bold">Repasse</h3>
+          <div className="rounded-md border border-borda p-3">
+            <h3 className="font-semibold">Repasse</h3>
             <dl>
               <Valor rotulo="Pagar agora" valor={formatarMoedaInteira(repasse.desembolsoInicial)} />
               <Valor
@@ -104,8 +104,8 @@ export default function PaginaRepasse() {
               />
             </dl>
           </div>
-          <div className="rounded-xl border-2 border-gray-300 p-3">
-            <h3 className="text-lg font-bold">
+          <div className="rounded-md border border-borda p-3">
+            <h3 className="font-semibold">
               Comprar outro de {formatarMoedaInteira(repasse.valorEquivalente)} financiado
             </h3>
             {compra ? (
@@ -127,7 +127,7 @@ export default function PaginaRepasse() {
           </div>
         </div>
         {referencia && (
-          <p className="mt-2 text-gray-700">
+          <p className="mt-2 text-texto-2">
             Comparação usando o cenário “{referencia.nome}”
             {diagnostico.melhor ? "" : " (depois de limpar o nome)"}. O financiamento novo pode
             exigir entrada maior do que vocês têm.

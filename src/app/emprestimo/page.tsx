@@ -75,37 +75,37 @@ export default function PaginaEmprestimo() {
       </Cartao>
 
       <Cartao titulo="Efeito no financiamento">
-        <p className="mb-3 text-lg">
+        <p className="mb-3">
           A parcela do empréstimo é descontada da parcela que o banco aceita (30% da renda). Por
           isso o preço máximo do imóvel <strong>cai</strong>.
         </p>
         <div className="grid grid-cols-2 gap-3">
-          <div className="rounded-xl border-2 border-gray-300 p-3">
-            <h3 className="font-bold">Sem empréstimo</h3>
-            <p className="text-sm text-gray-700">{refAntes?.nome ?? "—"}</p>
-            <p className="mt-2 text-2xl font-bold">
+          <div className="rounded-md border border-borda p-3">
+            <h3 className="font-semibold">Sem empréstimo</h3>
+            <p className="text-sm text-texto-2">{refAntes?.nome ?? "—"}</p>
+            <p className="mt-2 text-xl font-semibold">
               {formatarMoedaInteira(refAntes?.resultado.precoMaximo.SAC ?? 0)}
             </p>
             <p>Parcela máx.: {formatarMoeda(refAntes?.resultado.parcelaMaxima ?? 0)}</p>
           </div>
-          <div className="rounded-xl border-2 border-amber-500 p-3">
-            <h3 className="font-bold">Com empréstimo</h3>
-            <p className="text-sm text-gray-700">{refDepois?.nome ?? "—"}</p>
-            <p className="mt-2 text-2xl font-bold">
+          <div className="rounded-md border border-[#e2c47a] p-3">
+            <h3 className="font-semibold">Com empréstimo</h3>
+            <p className="text-sm text-texto-2">{refDepois?.nome ?? "—"}</p>
+            <p className="mt-2 text-xl font-semibold">
               {formatarMoedaInteira(refDepois?.resultado.precoMaximo.SAC ?? 0)}
             </p>
             <p>Parcela máx.: {formatarMoeda(refDepois?.resultado.parcelaMaxima ?? 0)}</p>
           </div>
         </div>
-        <p className="mt-2 text-gray-700">
+        <p className="mt-2 text-texto-2">
           O preço “com empréstimo” não inclui o dinheiro emprestado: some o valor emprestado à
           entrada apenas se o banco aceitar essa origem do dinheiro.
         </p>
-        {!antes.melhor && <p className="mt-1 text-gray-700">Valores considerando o nome limpo.</p>}
+        {!antes.melhor && <p className="mt-1 text-texto-2">Valores considerando o nome limpo.</p>}
       </Cartao>
 
       <Cartao titulo="Comparar com guardar dinheiro">
-        <p className="text-lg">
+        <p className="">
           {meses === null
             ? "Cadastre em Situação → Dinheiro quanto conseguem guardar por mês para comparar."
             : `Guardando ${formatarMoedaInteira(estado.dinheiro.guardaPorMes)} por mês, vocês juntariam ${formatarMoedaInteira(valor)} em cerca de ${formatarPrazo(meses)} — sem pagar ${formatarMoedaInteira(totalPago - valor)} de juros.`}
@@ -113,7 +113,7 @@ export default function PaginaEmprestimo() {
       </Cartao>
 
       <Cartao titulo="Atenção">
-        <ul className="list-disc space-y-2 pl-6 text-lg">
+        <ul className="list-disc space-y-2 pl-6">
           <li>
             Com nome sujo, empréstimos costumam ter juros muito altos — às vezes mais de 10% ao mês.
           </li>

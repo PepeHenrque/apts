@@ -152,15 +152,15 @@ export function FormPessoa({
         />
         {p.cpf.negativado && (
           <div>
-            <h3 className="mb-2 text-lg font-bold">Dívidas</h3>
+            <h3 className="mb-2 font-semibold">Dívidas</h3>
             {p.cpf.dividas.length === 0 && (
-              <p className="mb-3 text-gray-700">
+              <p className="mb-3 text-texto-2">
                 Cadastre as dívidas. Quando todas estiverem pagas, o app passa a mostrar “aguardando
                 atualização do score”.
               </p>
             )}
             {p.cpf.dividas.map((d, i) => (
-              <fieldset key={d.id} className="mb-4 rounded-xl border-2 border-gray-200 p-3">
+              <fieldset key={d.id} className="mb-4 rounded-md border border-borda p-3">
                 <legend className="px-1 font-semibold">Dívida {i + 1}</legend>
                 <CampoTexto
                   rotulo="Credor (para quem deve)"
@@ -216,7 +216,7 @@ export function FormPessoa({
                 })
               }
             >
-              + Adicionar dívida
+              Adicionar dívida
             </Botao>
           </div>
         )}
@@ -239,11 +239,11 @@ export function FormPessoa({
       </Cartao>
 
       <Cartao titulo="Outras parcelas mensais">
-        <p className="mb-3 text-gray-700">
+        <p className="mb-3 text-texto-2">
           Empréstimos, cartão parcelado, consignado… Elas diminuem a parcela que o banco aceita.
         </p>
         {p.compromissos.map((c, i) => (
-          <fieldset key={c.id} className="mb-4 rounded-xl border-2 border-gray-200 p-3">
+          <fieldset key={c.id} className="mb-4 rounded-md border border-borda p-3">
             <legend className="px-1 font-semibold">Parcela {i + 1}</legend>
             <CampoTexto
               rotulo="O que é"
@@ -276,7 +276,7 @@ export function FormPessoa({
             })
           }
         >
-          + Adicionar parcela mensal
+          Adicionar parcela mensal
         </Botao>
       </Cartao>
 
@@ -289,7 +289,7 @@ export function FormPessoa({
         />
       </Cartao>
 
-      <div className="sticky bottom-36 z-10 flex gap-2 rounded-2xl bg-gray-50/95 py-3">
+      <div className="sticky bottom-36 z-10 flex gap-2 rounded-md bg-fundo/95 py-3">
         <Botao type="submit" className="flex-1">
           Salvar
         </Botao>

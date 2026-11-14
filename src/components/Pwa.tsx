@@ -1,4 +1,5 @@
 "use client";
+import { Download } from "lucide-react";
 
 import { useEffect, useState } from "react";
 import { Botao } from "@/components/ui";
@@ -42,22 +43,23 @@ export function InstalarApp() {
   }, []);
 
   if (EH_DESKTOP) return null;
-  if (instalado) return <p className="text-lg font-semibold text-green-800">App instalado!</p>;
+  if (instalado) return <p className="text-lg font-semibold text-ok">App instalado.</p>;
 
   return (
     <div>
       {evento && (
         <Botao
           className="mb-3 w-full"
+          icone={Download}
           onClick={async () => {
             await evento.prompt();
             setEvento(null);
           }}
         >
-          📲 Instalar no aparelho
+          Instalar no aparelho
         </Botao>
       )}
-      <ul className="list-disc space-y-1 pl-6 text-lg">
+      <ul className="list-disc space-y-1 pl-6">
         <li>
           <strong>Android (Chrome):</strong> menu ⋮ → “Instalar app” ou “Adicionar à tela inicial”.
         </li>

@@ -1,4 +1,5 @@
 "use client";
+import { AlertTriangle, CheckCircle2, MapPin, XCircle } from "lucide-react";
 
 import { BotaoLocalizar } from "@/components/BotaoLocalizar";
 import { CampoSelecao } from "@/components/campos";
@@ -22,7 +23,13 @@ export function SeloOrcamento({ cor }: { cor: CorOrcamento }) {
   return (
     <span data-testid="cor-orcamento">
       <Selo cor={cor}>
-        {cor === "verde" ? "✅ " : cor === "amarelo" ? "⚠️ " : "⛔ "}
+        {cor === "verde" ? (
+          <CheckCircle2 size={16} strokeWidth={2} aria-hidden="true" />
+        ) : cor === "amarelo" ? (
+          <AlertTriangle size={16} strokeWidth={2} aria-hidden="true" />
+        ) : (
+          <XCircle size={16} strokeWidth={2} aria-hidden="true" />
+        )}
         {TEXTO_COR[cor]}
       </Selo>
     </span>
@@ -52,14 +59,16 @@ export function CartaoImovel({
   return (
     <article
       id={`imovel-${im.id}`}
-      className={`mb-4 scroll-mt-4 rounded-2xl border-2 bg-white p-4 ${im.status === "descartado" ? "border-gray-200 opacity-80" : "border-gray-300"}`}
+      className={`mb-4 scroll-mt-4 rounded-md border bg-white p-4 ${im.status === "descartado" ? "border-borda opacity-80" : "border-borda"}`}
     >
       <div className="flex flex-wrap items-start justify-between gap-2">
-        <h2 className="text-xl font-bold">{im.titulo}</h2>
+        <h2 className="text-lg font-semibold">{im.titulo}</h2>
         {avaliacao && <SeloOrcamento cor={avaliacao.cor} />}
       </div>
-      <p className="mt-1 text-3xl font-bold">{formatarMoedaInteira(im.preco)}</p>
-      <p className="text-lg text-gray-800">
+      <p className="mt-1 numeros text-2xl font-semibold tracking-tight">
+        {formatarMoedaInteira(im.preco)}
+      </p>
+      <p className="text-texto-2">
         {[
           im.tipo !== "qualquer" ? NOMES_TIPO_IMOVEL[im.tipo] : "",
           im.quartos ? `${im.quartos} quarto(s)` : "",
@@ -71,43 +80,49 @@ export function CartaoImovel({
           .join(" · ")}
       </p>
       {(im.bairro || im.cidade) && (
-        <p className="text-lg">{[im.bairro, im.cidade].filter(Boolean).join(", ")}</p>
+        <p className="">{[im.bairro, im.cidade].filter(Boolean).join(", ")}</p>
       )}
 
       {avaliacao && (
-        <dl className="mt-3 grid grid-cols-2 gap-2 rounded-xl bg-gray-50 p-3">
+        <dl className="mt-3 grid grid-cols-2 gap-2 rounded-md bg-fundo p-3">
           <div>
-            <dt className="text-sm text-gray-700">Entrada estimada</dt>
+            <dt className="text-sm text-texto-2">Entrada estimada</dt>
             <dd className="text-lg font-semibold">
               {formatarMoedaInteira(avaliacao.entradaNecessaria)}
             </dd>
           </div>
           <div>
-            <dt className="text-sm text-gray-700">Parcela estimada</dt>
+            <dt className="text-sm text-texto-2">Parcela estimada</dt>
             <dd className="text-lg font-semibold">{formatarMoeda(avaliacao.parcelaEstimada)}</dd>
           </div>
           {avaliacao.faltaEntrada > 0 && (
             <div>
-              <dt className="text-sm text-gray-700">Falta de entrada</dt>
-              <dd className="text-lg font-semibold text-red-800">
+              <dt className="text-sm text-texto-2">Falta de entrada</dt>
+              <dd className="text-lg font-semibold text-erro">
                 {formatarMoedaInteira(avaliacao.faltaEntrada)}
               </dd>
             </div>
           )}
           <div>
-            <dt className="text-sm text-gray-700">Custo por mês</dt>
+            <dt className="text-sm text-texto-2">Custo por mês</dt>
             <dd className="text-lg font-semibold">{formatarMoeda(dados.custoMensal)}</dd>
           </div>
         </dl>
       )}
       {dados.ehPotencial && (
-        <p className="mt-1 text-gray-700">Comparado com o cenário depois de limpar o nome.</p>
+        <p className="mt-1 text-texto-2">Comparado com o cenário depois de limpar o nome.</p>
       )}
 
       <div className="mt-3">
         {dados.distanciaCasaKm !== null && (
-          <p className="text-lg">
-            📍 {formatarDistancia(dados.distanciaCasaKm)} da casa atual (em linha reta)
+          <p className="">
+            <MapPin
+              size={18}
+              strokeWidth={1.75}
+              aria-hidden="true"
+              className="mr-1 inline align-[-3px] text-texto-3"
+            />
+            {formatarDistancia(dados.distanciaCasaKm)} da casa atual (em linha reta)
           </p>
         )}
         {dados.distanciasPontos.map((d) => (
@@ -120,9 +135,9 @@ export function CartaoImovel({
             href={linkRotaGoogleMaps(origemRota, destinoRota)}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-1 inline-block font-semibold text-blue-800 underline"
+            className="mt-1 inline-block font-semibold text-primaria underline"
           >
-            Ver rota no Google Maps ↗
+            Ver rota no Google Maps
           </a>
         )}
         {!local && endereco && (
@@ -136,9 +151,17 @@ export function CartaoImovel({
       </div>
 
       {dados.alertas.length > 0 && (
-        <ul className="mt-3 space-y-1 rounded-xl bg-amber-50 p-3 text-amber-950">
+        <ul className="mt-3 space-y-1 rounded-md bg-atencao-suave p-3 text-atencao">
           {dados.alertas.map((a) => (
-            <li key={a}>⚠️ {a}</li>
+            <li key={a} className="flex gap-2">
+              <AlertTriangle
+                size={18}
+                strokeWidth={1.75}
+                aria-hidden="true"
+                className="mt-0.5 shrink-0"
+              />
+              {a}
+            </li>
           ))}
         </ul>
       )}
@@ -156,12 +179,12 @@ export function CartaoImovel({
           href={linkSeguro(im.link) ?? undefined}
           target="_blank"
           rel="noopener noreferrer"
-          className="mt-2 inline-block font-semibold text-blue-800 underline"
+          className="mt-2 inline-block font-semibold text-primaria underline"
         >
-          Abrir anúncio ↗
+          Abrir anúncio
         </a>
       )}
-      {im.observacoes && <p className="mt-2 whitespace-pre-line text-gray-800">{im.observacoes}</p>}
+      {im.observacoes && <p className="mt-2 whitespace-pre-line text-texto-2">{im.observacoes}</p>}
       {im.fotos.length > 0 && (
         <p className="mt-1">
           Fotos:{" "}
@@ -174,7 +197,7 @@ export function CartaoImovel({
                 href={f}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mr-2 text-blue-800 underline"
+                className="mr-2 text-primaria underline"
               >
                 foto {i + 1}
               </a>
@@ -201,7 +224,7 @@ export function CartaoImovel({
         </Botao>
       </div>
       {(im.criadoPor || im.criadoEm) && (
-        <p className="mt-2 text-sm text-gray-700">
+        <p className="mt-2 text-sm text-texto-2">
           Adicionado {im.criadoPor && `por ${im.criadoPor}`}{" "}
           {im.criadoEm && `em ${formatarDataHora(im.criadoEm)}`}
         </p>

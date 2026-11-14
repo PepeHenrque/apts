@@ -52,8 +52,9 @@ export function AvisosGlobais() {
             </Botao>
             <Botao
               variante="perigo"
-              onClick={() => {
-                if (confirmar("Apagar o exemplo e começar com tudo em branco?")) recomecarDoZero();
+              onClick={async () => {
+                if (await confirmar("Apagar o exemplo e começar com tudo em branco?"))
+                  recomecarDoZero();
               }}
             >
               Começar do zero

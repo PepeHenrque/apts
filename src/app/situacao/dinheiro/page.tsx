@@ -56,8 +56,8 @@ function FormDinheiro({ inicial }: { inicial: Dinheiro }) {
           Salvar
         </Botao>
         {salvo && (
-          <p role="status" className="mt-2 font-semibold text-green-800">
-            Salvo!
+          <p role="status" className="mt-2 font-semibold text-ok">
+            Dinheiro disponível salvo.
           </p>
         )}
       </Cartao>
@@ -107,7 +107,7 @@ export default function PaginaDinheiro() {
             </Aviso>
           )}
           {!diagnostico.melhor && (
-            <p className="text-gray-700">
+            <p className="text-texto-2">
               Calculado com o cenário que fica possível depois de limpar o nome ({referencia?.nome}
               ).
             </p>

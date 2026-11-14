@@ -43,7 +43,7 @@ function FormPreferencias({ inicial }: { inicial: Preferencias }) {
           ...estado,
           preferencias: resultado.data,
         }));
-        setMensagem("Salvo!");
+        setMensagem("Preferências salvas.");
       }}
     >
       {Object.keys(erros).length > 0 && <Aviso tipo="perigo" titulo="Confira os campos." />}
@@ -147,12 +147,12 @@ function FormPreferencias({ inicial }: { inicial: Preferencias }) {
         />
       </Cartao>
 
-      <div className="sticky bottom-36 z-10 rounded-2xl bg-gray-50/95 py-3">
+      <div className="sticky bottom-36 z-10 rounded-md bg-fundo/95 py-3">
         <Botao type="submit" className="w-full">
           Salvar preferências
         </Botao>
         {mensagem && (
-          <p role="status" className="mt-2 text-center font-semibold text-green-800">
+          <p role="status" className="mt-2 text-center font-semibold text-ok">
             {mensagem}
           </p>
         )}

@@ -166,10 +166,8 @@ export default function PaginaRecusas() {
   return (
     <>
       <Cartao>
-        <p className="text-4xl font-bold">{resumo.total}</p>
-        <p className="text-lg">
-          {resumo.total === 1 ? "recusa registrada" : "recusas registradas"}
-        </p>
+        <p className="numeros text-3xl font-semibold tracking-tight">{resumo.total}</p>
+        <p className="">{resumo.total === 1 ? "recusa registrada" : "recusas registradas"}</p>
         {resumo.total > 0 && <p className="mt-2 text-lg font-semibold">{resumo.frase}</p>}
       </Cartao>
       {resumo.total > 0 && (
@@ -192,8 +190,8 @@ export default function PaginaRecusas() {
               </Botao>
               <Botao
                 variante="perigo"
-                onClick={() => {
-                  if (!confirmar("Remover esta recusa?")) return;
+                onClick={async () => {
+                  if (!(await confirmar("Remover esta recusa?"))) return;
                   atualizarEstado("Removeu uma recusa", (e) => ({
                     ...e,
                     recusas: e.recusas.filter((x) => x.id !== r.id),
@@ -222,19 +220,19 @@ export default function PaginaRecusas() {
               href={linkSeguro(r.imovelLink) ?? undefined}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-blue-800 underline"
+              className="text-primaria underline"
             >
               Ver anúncio
             </a>
           )}
-          {r.observacoes && <p className="mt-1 text-gray-700">{r.observacoes}</p>}
+          {r.observacoes && <p className="mt-1 text-texto-2">{r.observacoes}</p>}
         </Cartao>
       ))}
       <Botao
         className="mt-2 w-full"
         onClick={() => setEditando(esquemaRecusa.parse({ id: novoId() }))}
       >
-        + Registrar recusa
+        Registrar recusa
       </Botao>
     </>
   );

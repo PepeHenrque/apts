@@ -1,4 +1,5 @@
 "use client";
+import { MapPin } from "lucide-react";
 
 import dynamic from "next/dynamic";
 import { useMemo, useState } from "react";
@@ -98,7 +99,7 @@ export default function PaginaMapa() {
           <li key={l.texto} className="flex items-center gap-2">
             <span
               aria-hidden="true"
-              className="inline-block h-4 w-4 rounded-full border-2 border-white"
+              className="inline-block h-4 w-4 rounded-full border border-white"
               style={{ background: l.cor }}
             />
             {l.texto}
@@ -107,15 +108,16 @@ export default function PaginaMapa() {
       </ul>
       {semLocal.length > 0 && (
         <Cartao titulo="Imóveis sem localização" className="mt-4">
-          <p className="mb-2 text-lg">
+          <p className="mb-2">
             {semLocal.length} imóvel(is) têm endereço mas ainda não estão no mapa.
           </p>
           <Botao
             variante="secundario"
+            icone={MapPin}
             onClick={localizarTodos}
             disabled={progresso.startsWith("Localizando")}
           >
-            📍 Localizar todos
+            Localizar todos
           </Botao>
           {progresso && (
             <p role="status" className="mt-2 font-semibold">

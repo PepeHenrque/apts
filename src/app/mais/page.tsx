@@ -55,15 +55,15 @@ export default function PaginaMais() {
     <>
       <TituloPagina>Mais</TituloPagina>
       <nav aria-label="Todas as telas">
-        <ul className="mb-6 space-y-2">
+        <ul className="mb-6 grid gap-2 sm:grid-cols-2">
           {LINKS.map((l) => (
             <li key={l.href}>
               <Link
                 href={l.href}
-                className="block rounded-2xl border-2 border-gray-200 bg-white p-4 hover:border-blue-700"
+                className="block rounded-md border border-borda bg-white p-4 hover:border-primaria"
               >
-                <span className="block text-xl font-bold text-blue-900">{l.titulo}</span>
-                <span className="text-gray-700">{l.texto}</span>
+                <span className="block text-lg font-semibold text-primaria">{l.titulo}</span>
+                <span className="text-texto-2">{l.texto}</span>
               </Link>
             </li>
           ))}
@@ -90,7 +90,7 @@ export default function PaginaMais() {
       </Cartao>
 
       <Cartao titulo="Cópia de segurança">
-        <p className="mb-3 text-lg">
+        <p className="mb-3">
           Os dados ficam neste aparelho (e na nuvem, se a família estiver conectada). Baixe uma
           cópia de vez em quando.
         </p>
@@ -109,14 +109,14 @@ export default function PaginaMais() {
             id="importar"
             type="file"
             accept="application/json,.json"
-            className="text-lg"
+            className=""
             onChange={async (e) => {
               const arquivo = e.target.files?.[0];
               if (!arquivo) return;
               try {
                 const dados = lerEstado(JSON.parse(await arquivo.text()));
                 if (!dados) throw new Error("inválido");
-                if (confirmar("Substituir os dados deste aparelho pelos da cópia?")) {
+                if (await confirmar("Substituir os dados deste aparelho pelos da cópia?")) {
                   substituirEstado(dados);
                   setMensagem("Dados restaurados.");
                 }
@@ -128,8 +128,9 @@ export default function PaginaMais() {
           {mensagem && <Aviso tipo="info">{mensagem}</Aviso>}
           <Botao
             variante="perigo"
-            onClick={() => {
-              if (confirmar("Apagar tudo e voltar aos dados de exemplo?")) recarregarExemplo();
+            onClick={async () => {
+              if (await confirmar("Apagar tudo e voltar aos dados de exemplo?"))
+                recarregarExemplo();
             }}
           >
             Voltar aos dados de exemplo
