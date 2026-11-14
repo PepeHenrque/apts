@@ -97,7 +97,9 @@ const cacheGeo = lerJson<Record<string, { lat: number; lon: number } | null>>(CA
 let pedidosGeo = 0;
 let ultimoPedido = 0;
 
-async function geocodificar(consulta: string): Promise<{ lat: number; lon: number } | null | undefined> {
+async function geocodificar(
+  consulta: string,
+): Promise<{ lat: number; lon: number } | null | undefined> {
   const chave = consulta.toLowerCase();
   if (chave in cacheGeo) return cacheGeo[chave];
   if (pedidosGeo >= LIMITE_PEDIDOS_GEO) return undefined; // fica para amanhã
@@ -105,7 +107,12 @@ async function geocodificar(consulta: string): Promise<{ lat: number; lon: numbe
   if (espera > 0) await esperar(espera);
   ultimoPedido = Date.now();
   pedidosGeo++;
-  const params = new URLSearchParams({ format: "jsonv2", limit: "1", countrycodes: "br", q: consulta });
+  const params = new URLSearchParams({
+    format: "jsonv2",
+    limit: "1",
+    countrycodes: "br",
+    q: consulta,
+  });
   try {
     const r = await fetch(`https://nominatim.openstreetmap.org/search?${params}`, {
       headers: { "User-Agent": USER_AGENT, "Accept-Language": "pt-BR" },
@@ -163,7 +170,11 @@ async function registrarNoSupabase(status: unknown) {
   const gravou = await fetch(`${url}/rest/v1/estado_sistema`, {
     method: "POST",
     headers: cabecalhos,
-    body: JSON.stringify({ chave: "robo_caixa", valor: status, atualizado_em: new Date().toISOString() }),
+    body: JSON.stringify({
+      chave: "robo_caixa",
+      valor: status,
+      atualizado_em: new Date().toISOString(),
+    }),
   });
   return `Supabase: consulta ${vivo.status}, status ${gravou.status}`;
 }
@@ -181,10 +192,17 @@ async function main() {
       const csv = await baixarLista(uf);
       const lidos = lerListaCaixa(csv, HOJE);
       if (lidos.length === 0) throw new Error(`Lista de ${uf} veio vazia`);
-      const r = compararComAnterior(lidos, anterior?.imoveis ?? [], HOJE, anterior?.removidos ?? []);
+      const r = compararComAnterior(
+        lidos,
+        anterior?.imoveis ?? [],
+        HOJE,
+        anterior?.removidos ?? [],
+      );
       // Primeira execução: a lista inteira vira a base (nada é "novo" ainda).
       if (!anterior) r.novos = [];
-      for (const i of [...r.imoveis].filter((x) => x.lat === null).sort((a, b) => prioridade(a) - prioridade(b))) {
+      for (const i of [...r.imoveis]
+        .filter((x) => x.lat === null)
+        .sort((a, b) => prioridade(a) - prioridade(b))) {
         if (pedidosGeo >= LIMITE_PEDIDOS_GEO) break;
         await localizar(i);
       }
@@ -205,7 +223,9 @@ async function main() {
         removidos: r.removidos.filter((x) => x.saiuEm === HOJE).length,
         comLocalizacao: r.imoveis.filter((i) => i.lat !== null).length,
       };
-      console.log(`${uf}: ${r.imoveis.length} imóveis, ${r.novos.length} novos, ${porUf[uf].removidos} saíram`);
+      console.log(
+        `${uf}: ${r.imoveis.length} imóveis, ${r.novos.length} novos, ${porUf[uf].removidos} saíram`,
+      );
     } catch (e) {
       const msg = e instanceof Error ? e.message : String(e);
       erros.push(msg);
