@@ -73,7 +73,8 @@ Caixa".
 ```
 src/
   app/                    Rotas (App Router). layout.tsx tem o aviso fixo de estimativa.
-  components/             Componentes de interface reutilizáveis
+  components/             ui.tsx (botões, cartões, avisos), campos.tsx (formulários acessíveis),
+                          calculo.tsx (semáforo, cenário, parcelas), ListaVerificacao, navegação
   config/
     regras-mcmv.ts        TODAS as regras/valores do MCMV, com data de referência e fonte
   lib/
@@ -86,6 +87,7 @@ src/
       esquemas.ts         Esquemas Zod + tipos de TUDO que é salvo (EstadoFamilia)
       cenarios.ts         pessoa→proponente na data, gerarCenarios(), melhorCenario(), mudanças futuras
       dados-iniciais.ts   Dados de exemplo (seed) carregados no 1º uso — editáveis no app
+    armazenamento/        loja.ts (localStorage + histórico, via useSyncExternalStore), hooks.ts
     datas.ts              Datas "AAAA-MM-DD" sem erro de fuso
     formatar.ts           Formatação de moeda etc.
 e2e/                      Testes Playwright (só CI)
@@ -114,17 +116,18 @@ docs/
 
 ## Onde está cada funcionalidade
 
-| Funcionalidade                            | Local                                                       | Fase |
-| ----------------------------------------- | ----------------------------------------------------------- | ---- |
-| Motor de cálculo (pronto)                 | `src/lib/financiamento/`, `src/config/`, `src/lib/dominio/` | 1    |
-| F1 Nossa situação (contexto editável)     | _a criar_                                                   | 2    |
-| F2 Diagnóstico                            | _a criar_                                                   | 2    |
-| F3 Simulador de cenários                  | _a criar_                                                   | 2    |
-| F11 Repasse / F12 Empréstimo para entrada | _a criar_                                                   | 2    |
-| F9 Login, família, RLS                    | _a criar_ + `supabase/migrations/`                          | 3    |
-| F4 Busca guiada / F5 Imóveis / F6 Mapa    | _a criar_                                                   | 4    |
-| F8 Checklists / F10 Tela inicial / PWA    | _a criar_                                                   | 5    |
-| F7 Gemini                                 | _a criar_                                                   | 6    |
+| Funcionalidade                         | Local                                                       | Fase |
+| -------------------------------------- | ----------------------------------------------------------- | ---- |
+| Motor de cálculo (pronto)              | `src/lib/financiamento/`, `src/config/`, `src/lib/dominio/` | 1    |
+| F1 Nossa situação (pronto)             | `src/app/situacao/*`, `src/components/situacao/`            | 2    |
+| F2 Diagnóstico (pronto)                | `src/app/diagnostico`, `src/lib/dominio/diagnostico.ts`     | 2    |
+| F3 Simulador (pronto)                  | `src/app/simulador`, `src/components/calculo.tsx`           | 2    |
+| F11 Repasse / F12 Empréstimo (pronto)  | `src/app/repasse`, `src/app/emprestimo`                     | 2    |
+| Armazenamento local (localStorage)     | `src/lib/armazenamento/loja.ts` + `hooks.ts`                | 2    |
+| F9 Login, família, RLS                 | _a criar_ + `supabase/migrations/`                          | 3    |
+| F4 Busca guiada / F5 Imóveis / F6 Mapa | _a criar_                                                   | 4    |
+| F8 Checklists / F10 Tela inicial / PWA | _a criar_                                                   | 5    |
+| F7 Gemini                              | _a criar_                                                   | 6    |
 
 (Atualize esta tabela sempre que criar uma funcionalidade.)
 
