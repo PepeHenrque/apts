@@ -11,7 +11,9 @@ export const ITENS_NAVEGACAO = [
   { href: "/mais", rotulo: "Mais", icone: "☰" },
 ];
 
-function estaAtivo(caminho: string, href: string): boolean {
+function estaAtivo(caminhoBruto: string, href: string): boolean {
+  // No app de Windows as rotas terminam com "/" (ex.: /situacao/).
+  const caminho = caminhoBruto.length > 1 ? caminhoBruto.replace(/\/$/, "") : caminhoBruto;
   return href === "/" ? caminho === "/" : caminho === href || caminho.startsWith(`${href}/`);
 }
 
