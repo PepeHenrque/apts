@@ -1,5 +1,5 @@
 {
-  "atualizadoEm": "2026-11-14T17:31:15.040Z",
+  "atualizadoEm": "2026-11-14T17:43:47.836Z",
   "sucesso": true,
   "ufs": [
     "SP"
@@ -9,9 +9,9 @@
       "total": 3316,
       "novos": 0,
       "removidos": 0,
-      "comLocalizacao": 0
+      "comLocalizacao": 259
     }
   },
   "erros": [],
-  "pedidosDeLocalizacao": 0
+  "pedidosDeLocalizacao": 300
 }
