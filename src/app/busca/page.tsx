@@ -47,7 +47,11 @@ export default function PaginaBusca() {
 
   return (
     <>
-      <TituloPagina subtitulo="Links já filtrados com o preço que cabe no orçamento. Abra, encontre e salve os anúncios aqui no app.">
+      <TituloPagina
+        idAjuda="busca"
+        ajuda="Os links abrem os sites de imóveis já filtrados pelo preço máximo do melhor cenário. Quando acharem um anúncio bom, salvem em Imóveis salvos."
+        subtitulo="Links já filtrados com o preço que cabe no orçamento. Abra, encontre e salve os anúncios aqui no app."
+      >
         Buscar imóveis
       </TituloPagina>
       <AvisoCalculo />

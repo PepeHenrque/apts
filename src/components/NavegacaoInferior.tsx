@@ -17,6 +17,7 @@ export function NavegacaoInferior() {
               <Link
                 href={href}
                 aria-current={ativo ? "page" : undefined}
+                data-tour={href}
                 className={`flex min-h-16 flex-col items-center justify-center gap-1 text-[0.8rem] font-medium ${
                   ativo ? "text-primaria" : "text-texto-2"
                 }`}
@@ -55,6 +56,7 @@ export function BarraLateral() {
                     <Link
                       href={href}
                       aria-current={ativo ? "page" : undefined}
+                      data-tour={href}
                       className={`flex min-h-9 items-center gap-2.5 rounded-sm px-2 text-[0.95rem] ${
                         ativo
                           ? "bg-primaria-suave font-medium text-primaria-forte"

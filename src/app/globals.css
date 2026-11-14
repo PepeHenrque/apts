@@ -65,3 +65,11 @@ body {
 .numeros {
   font-variant-numeric: tabular-nums;
 }
+
+/* Item do menu destacado pelo tour de primeiros usos. */
+[data-destaque] {
+  outline: 3px solid var(--color-primaria);
+  outline-offset: -3px;
+  border-radius: 6px;
+  background: var(--color-primaria-suave);
+}

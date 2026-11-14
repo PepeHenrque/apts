@@ -1,4 +1,5 @@
 "use client";
+import { Users } from "lucide-react";
 
 import { useState } from "react";
 import { FormPessoa } from "@/components/situacao/FormPessoa";
@@ -82,8 +83,9 @@ export default function PaginaPessoas() {
   return (
     <>
       {estado.pessoas.length === 0 && (
-        <EstadoVazio titulo="Nenhuma pessoa cadastrada">
-          Adicione quem vai morar no imóvel e quem pode ser comprador.
+        <EstadoVazio titulo="Nenhuma pessoa cadastrada" icone={Users}>
+          Adicionem quem vai morar no imóvel e quem pode ser comprador. Sem isso o app não consegue
+          calcular quanto vocês podem pagar.
         </EstadoVazio>
       )}
       <div className="grid gap-x-4 lg:grid-cols-2">

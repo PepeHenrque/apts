@@ -29,7 +29,11 @@ export default function PaginaGuias() {
 
   return (
     <>
-      <TituloPagina subtitulo="Marque o que já fizeram. As marcações ficam salvas e aparecem para a família.">
+      <TituloPagina
+        idAjuda="guias"
+        ajuda="Marquem o que já fizeram. As marcações ficam salvas e aparecem para toda a família."
+        subtitulo="Marque o que já fizeram. As marcações ficam salvas e aparecem para a família."
+      >
         Checklists e guias
       </TituloPagina>
       <Aviso tipo="info">

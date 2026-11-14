@@ -239,3 +239,15 @@ nada de dados pessoais para o Gemini, nada pesado no notebook.
   (formulário "E se…" fixo à esquerda). Listas em grade de 2 colunas no computador.
 - Capturas de tela (390/768/1440 px) de 12 telas: artefato **`capturas-telas`** de cada execução
   do CI (Actions → execução → Artifacts). Antes: execução 43619216178. Depois: as seguintes.
+
+## 2.2 — Explicação para os primeiros usos (pronto)
+
+- Tour (`src/components/Tour.tsx`): 7 passos (boas-vindas, Situação, Diagnóstico, Simulador,
+  Busca, Imóveis, Checklists), destaca o item do menu (`data-tour`), botões Voltar/Próximo/
+  Concluir, "Pular por agora" (volta na próxima visita) e "Não mostrar de novo"
+  (`localStorage apts:tour:v1 = visto`). Botão fixo de ajuda (interrogação) reabre o tour.
+- Página `/como-usar` com 7 passos e links; também no menu.
+- Ajuda recolhível no topo das telas (`TituloPagina ajuda/idAjuda`, componente `AjudaDaTela`,
+  lembra em `apts:ajuda:<tela>`).
+- Estados vazios explicativos com ícone (imóveis, pessoas, recusas, filtros).
+- E2E: `e2e/tour.spec.ts`; os outros testes marcam o tour como visto.

@@ -1,6 +1,7 @@
 /** Itens de navegação (barra lateral no computador, barra inferior no celular). */
 import {
   Activity,
+  BookOpen,
   Building2,
   Calculator,
   ClipboardList,
@@ -46,6 +47,7 @@ export const NAVEGACAO_LATERAL: { grupo: string; itens: ItemNavegacao[] }[] = [
       { href: "/repasse", rotulo: "Repasse", icone: Repeat },
       { href: "/emprestimo", rotulo: "Empréstimo", icone: Landmark },
       { href: "/familia", rotulo: "Família e login", icone: Users },
+      { href: "/como-usar", rotulo: "Como usar", icone: BookOpen },
     ],
   },
 ];

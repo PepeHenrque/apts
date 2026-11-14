@@ -11,6 +11,11 @@ import { lerEstado } from "@/lib/dominio/esquemas";
 
 const LINKS = [
   {
+    href: "/como-usar",
+    titulo: "Como usar",
+    texto: "Passo a passo, do cadastro até salvar um imóvel",
+  },
+  {
     href: "/familia",
     titulo: "Família e login",
     texto: "Compartilhar os dados com a família em vários aparelhos",

@@ -86,7 +86,13 @@ export default function PaginaMapa() {
 
   return (
     <>
-      <TituloPagina subtitulo="Toque em um ponto para ver o imóvel.">Mapa</TituloPagina>
+      <TituloPagina
+        idAjuda="mapa"
+        ajuda="Mostra a casa atual e os imóveis salvos que têm endereço. As cores seguem o orçamento: verde, amarelo e vermelho."
+        subtitulo="Toque em um ponto para ver o imóvel."
+      >
+        Mapa
+      </TituloPagina>
       {pontos.length === 0 && (
         <Aviso tipo="info">
           Nenhum ponto no mapa ainda. Cadastre o endereço da casa atual e localize os imóveis

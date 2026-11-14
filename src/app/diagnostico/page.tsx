@@ -21,7 +21,11 @@ export default function PaginaDiagnostico() {
 
   return (
     <>
-      <TituloPagina subtitulo="O que está bloqueando a aprovação e o que fazer, do mais grave ao mais leve.">
+      <TituloPagina
+        idAjuda="diagnostico"
+        ajuda="O semáforo resume se já dá para pedir o financiamento. Abaixo, cada problema aparece com uma explicação e o que fazer, do mais grave ao mais leve."
+        subtitulo="O que está bloqueando a aprovação e o que fazer, do mais grave ao mais leve."
+      >
         Por que estão negando?
       </TituloPagina>
       <AvisoCalculo />

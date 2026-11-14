@@ -114,7 +114,13 @@ export default function PaginaSimulador() {
 
   return (
     <>
-      <TituloPagina subtitulo="Cada combinação de compradores muda o prazo, a parcela e o preço máximo.">
+      <TituloPagina
+        idAjuda="simulador"
+        ajuda={
+          'Cada cartão é uma combinação de compradores. O preço máximo considera a parcela (até 30% da renda), o prazo pela idade do mais velho, o subsídio, o FGTS e o dinheiro guardado. Use "E se…?" para testar mudanças sem salvar.'
+        }
+        subtitulo="Cada combinação de compradores muda o prazo, a parcela e o preço máximo."
+      >
         Simulador
       </TituloPagina>
       <AvisoCalculo />

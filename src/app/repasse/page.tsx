@@ -34,7 +34,11 @@ export default function PaginaRepasse() {
 
   return (
     <>
-      <TituloPagina subtitulo="Comprar um imóvel que ainda está sendo pago por outra pessoa.">
+      <TituloPagina
+        idAjuda="repasse"
+        ajuda="Repasse é assumir o financiamento de outra pessoa. Aqui dá para comparar o custo com comprar outro imóvel financiado e conferir os cuidados."
+        subtitulo="Comprar um imóvel que ainda está sendo pago por outra pessoa."
+      >
         Repasse
       </TituloPagina>
 

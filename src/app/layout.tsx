@@ -5,6 +5,7 @@ import { AvisosGlobais } from "@/components/AvisosGlobais";
 import { Feedback } from "@/components/Feedback";
 import { BarraLateral, NavegacaoInferior } from "@/components/NavegacaoInferior";
 import { RegistrarServiceWorker } from "@/components/Pwa";
+import { BotaoAjuda, Tour } from "@/components/Tour";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
@@ -47,6 +48,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           <AvisoEstimativa />
           <NavegacaoInferior />
         </div>
+        <BotaoAjuda />
+        <Tour />
         <Feedback />
         <RegistrarServiceWorker />
       </body>
