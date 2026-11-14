@@ -10,6 +10,8 @@ const TELAS = [
   ["simulador", "/simulador"],
   ["imoveis", "/imoveis"],
   ["busca", "/busca"],
+  ["encontrados", "/encontrados"],
+  ["como-usar", "/como-usar"],
   ["guias", "/guias"],
   ["repasse", "/repasse"],
   ["emprestimo", "/emprestimo"],

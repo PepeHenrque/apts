@@ -18,6 +18,7 @@ const TELAS = [
   "/mais",
   "/familia",
   "/como-usar",
+  "/encontrados",
 ];
 
 test.beforeEach(async ({ page }) => {
