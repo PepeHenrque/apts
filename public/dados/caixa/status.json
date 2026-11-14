@@ -1,0 +1,17 @@
+{
+  "atualizadoEm": "2026-11-14T17:31:15.040Z",
+  "sucesso": true,
+  "ufs": [
+    "SP"
+  ],
+  "porUf": {
+    "SP": {
+      "total": 3316,
+      "novos": 0,
+      "removidos": 0,
+      "comLocalizacao": 0
+    }
+  },
+  "erros": [],
+  "pedidosDeLocalizacao": 0
+}

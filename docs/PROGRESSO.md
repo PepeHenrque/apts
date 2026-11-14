@@ -251,3 +251,31 @@ nada de dados pessoais para o Gemini, nada pesado no notebook.
   lembra em `apts:ajuda:<tela>`).
 - Estados vazios explicativos com ícone (imóveis, pessoas, recusas, filtros).
 - E2E: `e2e/tour.spec.ts`; os outros testes marcam o tour como visto.
+
+## 2.3 — Robô dos imóveis da Caixa (pronto)
+
+- Fonte: arquivo oficial `https://venda-imoveis.caixa.gov.br/listaweb/Lista_imoveis_<UF>.csv`
+  (o mesmo do botão "Baixar lista"; sem `robots.txt` restringindo). O robô se identifica
+  (`apts-robo/1.0 (+repositório)`), baixa 1 arquivo por estado por dia e **não contorna**
+  bloqueios: se a Caixa redirecionar, tenta mais uma vez e registra o erro.
+- Parser puro `src/lib/caixa/parser.ts` (latin1, ";"), testado com amostra real
+  (`src/lib/caixa/__fixtures__/Lista_imoveis_SP_amostra.csv`). O CSV **não informa FGTS**
+  (só financiamento) — o link oficial de cada imóvel tem o detalhe.
+- Robô `scripts/robo-caixa.ts` (Node puro, sem dependências) + `.github/workflows/robo-caixa.yml`
+  (todo dia 06:15, ou manual). Grava `public/dados/caixa/<UF>.json` e `status.json`, cache de
+  coordenadas em `dados/geocache-caixa.json` (Nominatim, 1,1 s entre pedidos, até 300 pedidos
+  por execução — o resto fica para os dias seguintes, priorizando `CAIXA_CIDADES`, quem aceita
+  financiamento e os novos). Novos = vistos depois da primeira execução (`baseDesde`); saídos
+  ficam listados por 30 dias. Commit diário feito por "apts-robo" (mantém o repositório ativo);
+  com `SUPABASE_URL`/`SUPABASE_SERVICE_ROLE_KEY` nos secrets, também consulta o banco (evita
+  pausa) e grava o status em `estado_sistema` (tabela da etapa 2.7).
+- Variáveis do repositório: `CAIXA_UFS` (padrão `SP`), `CAIXA_CIDADES` (prioridade de
+  localização). O CI ignora commits que só mudam `public/dados/**` e `dados/**`.
+- Tela `/encontrados`: filtra por orçamento (melhor cenário, ou o potencial), tipo, quartos,
+  cidade/bairros desejados, distância e "aceita financiamento"; selo Novo, cor do orçamento,
+  distância, link oficial e "Salvar nos meus imóveis". Alternativa manual: importar o CSV
+  baixado do site da Caixa (vale só na visita).
+- Outras fontes avaliadas: não encontramos outro banco com lista pública para download (BB,
+  Santander, Bradesco e Itaú mostram imóveis só em páginas de busca/leilão, sem arquivo aberto).
+  Raspar essas páginas não é permitido, então ficaram de fora; os links de busca da etapa 1
+  continuam cobrindo OLX, Zap, VivaReal e Facebook.

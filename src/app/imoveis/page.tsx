@@ -1,5 +1,5 @@
 "use client";
-import { Building2, Filter, Map as MapIcone, Plus, Search } from "lucide-react";
+import { Building2, Filter, Map as MapIcone, Plus, Radar, Search } from "lucide-react";
 
 import { useMemo, useState } from "react";
 import { CampoMarcar, CampoSelecao } from "@/components/campos";
@@ -135,10 +135,13 @@ export default function PaginaImoveis() {
         Imóveis salvos
       </TituloPagina>
       <AvisoCalculo />
-      <div className="mb-4 grid grid-cols-1 gap-2 sm:grid-cols-3">
+      <div className="mb-4 grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-4">
         <Botao icone={Plus} onClick={() => setEditando(imovelEmBranco())}>
           Adicionar imóvel
         </Botao>
+        <BotaoLink href="/encontrados" variante="secundario" icone={Radar}>
+          Encontrados
+        </BotaoLink>
         <BotaoLink href="/busca" variante="secundario" icone={Search}>
           Buscar nos sites
         </BotaoLink>

@@ -4,6 +4,8 @@ on:
   pull_request:
   push:
     branches: [main]
+    # Commits diários do robô (só dados) não precisam rodar o CI inteiro.
+    paths-ignore: ["public/dados/**", "dados/**"]
 
 concurrency:
   group: ci-${{ github.ref }}

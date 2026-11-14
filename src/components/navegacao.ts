@@ -10,6 +10,7 @@ import {
   ListChecks,
   Map,
   Menu,
+  Radar,
   Repeat,
   Search,
   Users,
@@ -36,6 +37,7 @@ export const NAVEGACAO_LATERAL: { grupo: string; itens: ItemNavegacao[] }[] = [
     grupo: "Imóveis",
     itens: [
       { href: "/imoveis", rotulo: "Imóveis salvos", icone: Building2 },
+      { href: "/encontrados", rotulo: "Encontrados", icone: Radar },
       { href: "/busca", rotulo: "Buscar nos sites", icone: Search },
       { href: "/mapa", rotulo: "Mapa", icone: Map },
     ],

@@ -10,3 +10,5 @@ next-env.d.ts
 docs/PROMPT-ORIGINAL.md
 src-tauri/target
 src-tauri/gen
+public/dados
+dados
