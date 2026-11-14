@@ -1,0 +1,130 @@
+# Guia do projeto "apts" para assistentes de IA
+
+> **CLAUDE.md, AGENTS.md e GEMINI.md têm o mesmo conteúdo.** Edite o `CLAUDE.md` e rode
+> `npm run sincronizar-guias` para copiar para os outros dois (o `AGENTS.md` mantém no topo o bloco
+> do Next.js, que o `next dev` re-insere automaticamente).
+>
+> Antes de começar qualquer tarefa, leia também `docs/PROGRESSO.md` (estado atual e próximos passos)
+> e, se precisar do pedido completo, `docs/PROMPT-ORIGINAL.md`.
+
+## O que é
+
+App web (celular primeiro, tudo em português do Brasil, linguagem simples) para uma família descobrir
+**quanto consegue financiar pela Caixa (Minha Casa Minha Vida)**, **o que bloqueia a aprovação**,
+**qual combinação de compradores funciona** e organizar a busca de imóveis dentro do orçamento.
+
+Regra de ouro: **nada da situação da família fica fixo no código**. Pessoas, rendas, dívidas,
+recusas, preferências etc. são editáveis no app; os dados reais iniciais servem só de exemplo/seed.
+Todo cálculo é **estimativa** — telas de cálculo mostram "Estimativa — o valor final é definido pela
+Caixa".
+
+## Stack
+
+- Next.js 16 (App Router, `src/`), React 19, TypeScript strict (`noUncheckedIndexedAccess`), Tailwind 4
+- **Atenção:** o Next 16 tem mudanças grandes. A documentação da versão instalada está em
+  `node_modules/next/dist/docs/` — consulte antes de usar APIs do Next. `cacheComponents` está ligado
+  em `next.config.ts`.
+- Zod 4 (validação), Vitest (unitários, ambiente Node), Playwright (E2E, **só no CI**)
+- Supabase (Postgres + Auth por link mágico + RLS) — a partir da Fase 3
+- Leaflet + OpenStreetMap, Nominatim (1 req/s, User-Agent identificável, cache no banco) — Fase 4
+- Gemini API, nível gratuito, opcional — Fase 6
+- Deploy: Vercel
+
+## Restrições
+
+- Notebook do desenvolvedor é fraco: **nada de Docker, banco local ou Playwright local**. Localmente só
+  `npm run dev`, `npm test`, `npm run lint`, `npm run typecheck`. Build e E2E rodam no GitHub Actions.
+- Só serviços gratuitos.
+- **Proibido scraping** (OLX, Facebook, Zap, VivaReal...). Busca = links pré-filtrados + cadastro
+  manual/colado.
+- Segredos só em variáveis de ambiente do servidor. Nunca `NEXT_PUBLIC_` para chave do Gemini ou
+  service role do Supabase. `.env*` está no `.gitignore` (exceto `.env.example`).
+- Para o Gemini vai **somente o texto do anúncio** (ou números anonimizados) — nunca nomes, CPF,
+  rendas ou dívidas da família.
+
+## Comandos
+
+| Comando                     | O que faz                                           |
+| --------------------------- | --------------------------------------------------- |
+| `npm run dev`               | Servidor de desenvolvimento (http://localhost:3000) |
+| `npm test`                  | Testes unitários (Vitest, uma vez)                  |
+| `npm run test:watch`        | Vitest em modo observação                           |
+| `npm run lint`              | ESLint                                              |
+| `npm run typecheck`         | Gera tipos de rota do Next + `tsc --noEmit`         |
+| `npm run format`            | Prettier (corrige)                                  |
+| `npm run format:check`      | Prettier (só confere — o CI usa este)               |
+| `npm run verificar`         | lint + typecheck + testes (rode antes de cada PR)   |
+| `npm run build`             | Build de produção (preferir deixar para o CI)       |
+| `npm run test:e2e`          | Playwright (roda no CI; precisa de build antes)     |
+| `npm run sincronizar-guias` | Copia CLAUDE.md para AGENTS.md e GEMINI.md          |
+
+## Estrutura de pastas
+
+```
+src/
+  app/                    Rotas (App Router). layout.tsx tem o aviso fixo de estimativa.
+  components/             Componentes de interface reutilizáveis
+  config/
+    regras-mcmv.ts        (Fase 1) TODAS as regras/valores do MCMV, com data de referência e fonte
+  lib/
+    financiamento/        (Fase 1) Funções PURAS de cálculo + testes *.test.ts ao lado
+    formatar.ts           Formatação de moeda etc.
+e2e/                      Testes Playwright (só CI)
+supabase/migrations/      (Fase 3) SQL versionado: tabelas + policies RLS
+docs/
+  PROGRESSO.md            Estado do projeto — atualizar ao fim de cada fase
+  PROMPT-ORIGINAL.md      Pedido completo do projeto
+.github/workflows/ci.yml  CI: lint, format, typecheck, unitários, build, E2E
+```
+
+## Regras de negócio (resumo — os valores ficam em `src/config/regras-mcmv.ts`)
+
+- Faixas MCMV urbano (renda familiar bruta mensal): F1 ≤ R$ 3.200; F2 ≤ R$ 5.000; F3 ≤ R$ 9.600;
+  F4 ≤ R$ 13.000. Renda exatamente no limite pertence à faixa.
+- Subsídio: teto R$ 55.000 (F1 e F2), estimativa decrescente com a renda — fórmula isolada e
+  configurável.
+- Teto do imóvel F1/F2: ~R$ 275.000 (configurável por localidade).
+- Juros por faixa configuráveis.
+- **Idade do proponente mais velho + prazo ≤ 80 anos e 6 meses**; prazo máximo 420 meses.
+- Parcela ≤ **30%** da renda bruta, já descontando outros compromissos mensais.
+- Seguro MIP por faixa etária (% sobre saldo) + taxa de administração: descontados da parcela
+  disponível.
+- SAC (1ª parcela é a maior e limita) e Price — SAC financia menos.
+- CPF negativado ⇒ proponente não aprovável. Sem renda comprovada ⇒ não pode ser titular sozinho.
+- FGTS compõe entrada se tiver 3+ anos de contribuição.
+
+## Onde está cada funcionalidade
+
+| Funcionalidade                            | Local                                   | Fase |
+| ----------------------------------------- | --------------------------------------- | ---- |
+| Motor de cálculo                          | `src/lib/financiamento/`, `src/config/` | 1    |
+| F1 Nossa situação (contexto editável)     | _a criar_                               | 2    |
+| F2 Diagnóstico                            | _a criar_                               | 2    |
+| F3 Simulador de cenários                  | _a criar_                               | 2    |
+| F11 Repasse / F12 Empréstimo para entrada | _a criar_                               | 2    |
+| F9 Login, família, RLS                    | _a criar_ + `supabase/migrations/`      | 3    |
+| F4 Busca guiada / F5 Imóveis / F6 Mapa    | _a criar_                               | 4    |
+| F8 Checklists / F10 Tela inicial / PWA    | _a criar_                               | 5    |
+| F7 Gemini                                 | _a criar_                               | 6    |
+
+(Atualize esta tabela sempre que criar uma funcionalidade.)
+
+## Fluxo Git (obrigatório)
+
+1. `main` sempre estável. Nunca commitar direto nela.
+2. Uma branch por tarefa: `feat/f1-perfil`, `fix/...`, `chore/...`.
+3. Commits pequenos, **Conventional Commits em português**: `feat(simulador): calcula prazo máximo
+pela idade`.
+4. Antes do PR: `npm run verificar` (e `npm run format`).
+5. `gh pr create` com o que mudou e como testar → esperar CI verde → `gh pr merge --squash
+--delete-branch`.
+6. Ao fim de cada fase: atualizar `docs/PROGRESSO.md` e a tabela acima.
+7. Nunca commitar segredos.
+
+## Convenções de código
+
+- Código, nomes e comentários em português quando falam do domínio (ex.: `calcularPrazoMaximo`).
+- Lógica financeira só em funções puras, testadas com Vitest. Componentes não fazem conta.
+- Simples e bem nomeado; sem abstrações desnecessárias.
+- Interface: botões e fontes grandes, alto contraste, `label` em todo campo, foco visível, estados de
+  carregando/vazio/erro em toda tela.
