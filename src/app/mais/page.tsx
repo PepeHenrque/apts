@@ -10,6 +10,11 @@ import { definirQuem, recarregarExemplo, substituirEstado } from "@/lib/armazena
 import { lerEstado } from "@/lib/dominio/esquemas";
 
 const LINKS = [
+  {
+    href: "/familia",
+    titulo: "Família e login",
+    texto: "Compartilhar os dados com a família em vários aparelhos",
+  },
   { href: "/diagnostico", titulo: "Por que estão negando?", texto: "Bloqueios e o que fazer" },
   {
     href: "/simulador",
@@ -86,7 +91,8 @@ export default function PaginaMais() {
 
       <Cartao titulo="Cópia de segurança">
         <p className="mb-3 text-lg">
-          Por enquanto os dados ficam só neste aparelho. Baixe uma cópia de vez em quando.
+          Os dados ficam neste aparelho (e na nuvem, se a família estiver conectada). Baixe uma
+          cópia de vez em quando.
         </p>
         <div className="flex flex-col gap-2">
           <Botao

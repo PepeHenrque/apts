@@ -3,7 +3,12 @@
 import { useState } from "react";
 import { Aviso, Botao, confirmar } from "@/components/ui";
 import { CampoTexto } from "@/components/campos";
-import { useErroArmazenamento, useEstadoFamilia, useQuem } from "@/lib/armazenamento/hooks";
+import {
+  useErroArmazenamento,
+  useEstadoFamilia,
+  useNuvem,
+  useQuem,
+} from "@/lib/armazenamento/hooks";
 import { atualizarEstado, definirQuem, recomecarDoZero } from "@/lib/armazenamento/loja";
 
 /** Avisos que aparecem no topo de todas as telas quando necessário. */
@@ -11,6 +16,8 @@ export function AvisosGlobais() {
   const estado = useEstadoFamilia();
   const quem = useQuem();
   const erro = useErroArmazenamento();
+  // Assinar a nuvem aqui (layout) mantém a sincronização ligada em todas as telas.
+  const nuvem = useNuvem();
   const [nome, setNome] = useState("");
 
   if (!estado) return null;
@@ -18,6 +25,9 @@ export function AvisosGlobais() {
   return (
     <div>
       {erro && <Aviso tipo="perigo">{erro}</Aviso>}
+      {(nuvem.tipo === "erro" || nuvem.tipo === "conflito") && nuvem.mensagem && (
+        <Aviso tipo="alerta">{nuvem.mensagem}</Aviso>
+      )}
 
       {estado.ehExemplo && (
         <Aviso tipo="alerta" titulo="Estes são dados de exemplo">
