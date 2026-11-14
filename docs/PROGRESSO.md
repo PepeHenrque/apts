@@ -3,7 +3,7 @@
 > Atualize este arquivo ao fim de cada fase. Ele deve bastar para qualquer pessoa ou IA continuar o
 > trabalho sem o histórico do chat. Pedido completo: `docs/PROMPT-ORIGINAL.md`.
 
-Última atualização: 14/11/2026 — Fase 6 (código) concluída.
+Última atualização: 14/11/2026 — Fase 7 (código) concluída.
 
 ## Ordem de execução combinada com o dono (14/11/2026)
 
@@ -149,6 +149,25 @@ configuráveis e marcados "A CONFIRMAR"; **nunca** colocar atribuição de IA em
 - Interface: `src/components/ia/Ia.tsx` (`BotaoPreencherIA` no formulário de imóvel e
   `ExplicarSituacao` no Diagnóstico).
 
+## Fase 7 — Deploy e revisão geral (código pronto; falta o dono publicar)
+
+- **Passo a passo para o dono: `docs/VERCEL.md`** (conta Hobby, importar o repositório,
+  variáveis, ajustar URL no Supabase, instalar no celular).
+- README reescrito com tudo o que o app faz e links para os passos a passo.
+- Revisão de segurança:
+  - nenhum segredo versionado (`.env*` ignorado, só `.env.example`); `SUPABASE_SERVICE_ROLE_KEY`
+    só em `src/lib/supabase/servidor.ts` (lança erro se usado no navegador) e rotas de API;
+    `GEMINI_API_KEY` só em `src/lib/ia/gemini.ts`;
+  - entradas das rotas de API validadas com Zod; limite por IP nas rotas de IA;
+  - RLS testado no CI (job "Banco");
+  - links digitados por usuários só viram link se forem http(s) (`src/lib/seguranca.ts`);
+  - cabeçalhos de segurança (`nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy`,
+    `Permissions-Policy`). CSP não foi ativada (o Next usa scripts inline; avaliar com nonce no
+    futuro).
+- Revisão de acessibilidade: teste automático com axe (WCAG 2/2.1 A e AA) em 14 telas
+  (`e2e/acessibilidade.spec.ts`), além de rótulos em todos os campos, foco visível, alvos de toque
+  ≥ 48 px, fonte base 18 px, cor nunca como única informação.
+
 ## Decisões tomadas
 
 - **Juros nominais ÷ 12** para a taxa mensal (como a Caixa divulga).
@@ -162,9 +181,10 @@ configuráveis e marcados "A CONFIRMAR"; **nunca** colocar atribuição de IA em
 - Dados da família = 1 documento JSON por família (simples; o formato é validado pelo Zod no app). Concorrência: versão otimista; em conflito, vale a versão do banco e o usuário é avisado.
 - Convites não enviam e-mail próprio (exigiria service key/SMTP): a pessoa é avisada pelo WhatsApp e entra com o e-mail convidado.
 
-## Próximos passos (Fase 7 — Vercel e revisão geral)
+## Próximos passos (Fase 8 — executável Windows com Tauri)
 
-1. Branch `chore/f7-revisao-deploy`.
-2. `docs/VERCEL.md`: passo a passo de importar o repositório, variáveis e domínio.
-3. Revisão: acessibilidade (rótulos, contraste, foco, alvos de toque), textos, segurança
-   (segredos, RLS, validação no servidor, cabeçalhos), README final.
+1. Branch `feat/f8-app-windows`.
+2. `src-tauri/` mínimo (Tauri 2) carregando o site estático (`EXPORTAR_ESTATICO=1`, sem rotas de API).
+3. Workflow `.github/workflows/windows.yml` (runner Windows) gera o instalador `.exe` e publica
+   numa Release do GitHub quando uma tag `v*` é criada (ou manualmente).
+4. README: como baixar e o aviso do Windows por não ser assinado.
