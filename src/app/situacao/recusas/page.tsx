@@ -1,4 +1,5 @@
 "use client";
+import { FileX } from "lucide-react";
 
 import { useState } from "react";
 import {
@@ -178,7 +179,12 @@ export default function PaginaRecusas() {
       <Aviso tipo="info">
         Cadastrar cada recusa ajuda o Diagnóstico a mostrar o que mais está atrapalhando.
       </Aviso>
-      {recusas.length === 0 && <EstadoVazio titulo="Nenhuma recusa registrada" />}
+      {recusas.length === 0 && (
+        <EstadoVazio titulo="Nenhuma recusa registrada" icone={FileX}>
+          Se o banco já negou algum pedido, registrem aqui com o motivo informado. Isso ajuda o
+          diagnóstico a mostrar o que mais atrapalha.
+        </EstadoVazio>
+      )}
       {recusas.map((r) => (
         <Cartao
           key={r.id}

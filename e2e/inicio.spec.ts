@@ -2,7 +2,10 @@ import { expect, test } from "@playwright/test";
 
 test.beforeEach(async ({ page }) => {
   // Evita o pedido "Quem está usando este aparelho?" nos testes.
-  await page.addInitScript(() => window.localStorage.setItem("apts:quem", "Teste"));
+  await page.addInitScript(() => {
+    window.localStorage.setItem("apts:quem", "Teste");
+    window.localStorage.setItem("apts:tour:v1", "visto");
+  });
 });
 
 test("tela inicial mostra o semáforo e o aviso de estimativa", async ({ page }) => {

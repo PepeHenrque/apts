@@ -17,10 +17,14 @@ const TELAS = [
   "/emprestimo",
   "/mais",
   "/familia",
+  "/como-usar",
 ];
 
 test.beforeEach(async ({ page }) => {
-  await page.addInitScript(() => window.localStorage.setItem("apts:quem", "Teste"));
+  await page.addInitScript(() => {
+    window.localStorage.setItem("apts:quem", "Teste");
+    window.localStorage.setItem("apts:tour:v1", "visto");
+  });
 });
 
 for (const tela of TELAS) {

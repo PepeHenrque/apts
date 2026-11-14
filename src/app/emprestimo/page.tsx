@@ -40,7 +40,11 @@ export default function PaginaEmprestimo() {
 
   return (
     <>
-      <TituloPagina subtitulo="Pegar dinheiro emprestado para dar de entrada: veja o efeito antes de decidir.">
+      <TituloPagina
+        idAjuda="emprestimo"
+        ajuda="Mostra quanto custa pegar dinheiro emprestado para a entrada e quanto isso diminui o valor que o banco aceita financiar."
+        subtitulo="Pegar dinheiro emprestado para dar de entrada: veja o efeito antes de decidir."
+      >
         Empréstimo para a entrada
       </TituloPagina>
       <AvisoCalculo />

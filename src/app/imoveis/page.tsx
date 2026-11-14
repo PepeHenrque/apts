@@ -1,5 +1,5 @@
 "use client";
-import { Map as MapIcone, Plus, Search } from "lucide-react";
+import { Building2, Filter, Map as MapIcone, Plus, Search } from "lucide-react";
 
 import { useMemo, useState } from "react";
 import { CampoMarcar, CampoSelecao } from "@/components/campos";
@@ -64,7 +64,12 @@ export default function PaginaImoveis() {
     const existe = estado.imoveis.some((i) => i.id === editando.id);
     return (
       <>
-        <TituloPagina>{existe ? "Editar imóvel" : "Novo imóvel"}</TituloPagina>
+        <TituloPagina
+          idAjuda="imoveis"
+          ajuda="Guarde aqui os anúncios que gostaram. Verde: cabe no orçamento. Amarelo: até 10% acima. Vermelho: não cabe. A entrada e a parcela são estimativas."
+        >
+          {existe ? "Editar imóvel" : "Novo imóvel"}
+        </TituloPagina>
         <FormImovel
           inicial={editando}
           aoCancelar={() => setEditando(null)}
@@ -143,9 +148,9 @@ export default function PaginaImoveis() {
       </div>
 
       {estado.imoveis.length === 0 ? (
-        <EstadoVazio titulo="Nenhum imóvel salvo ainda">
-          Use “Buscar nos sites” para achar anúncios e depois “Adicionar imóvel” colando o link ou o
-          texto do anúncio.
+        <EstadoVazio titulo="Nenhum imóvel salvo ainda" icone={Building2}>
+          Vocês ainda não salvaram nenhum imóvel. Toquem em Adicionar imóvel ou compartilhem um
+          anúncio para o app. Para achar anúncios, usem Buscar nos sites.
         </EstadoVazio>
       ) : (
         <>
@@ -174,7 +179,11 @@ export default function PaginaImoveis() {
               aoMudar={setOrdem}
             />
           </details>
-          {visiveis.length === 0 && <EstadoVazio titulo="Nenhum imóvel com esses filtros" />}
+          {visiveis.length === 0 && (
+            <EstadoVazio titulo="Nenhum imóvel com esses filtros" icone={Filter}>
+              Mudem os filtros acima para ver os outros imóveis salvos.
+            </EstadoVazio>
+          )}
           <div className="grid gap-x-4 lg:grid-cols-2">
             {visiveis.map((dados) => (
               <CartaoImovel
