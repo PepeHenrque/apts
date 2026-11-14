@@ -29,7 +29,7 @@ const CLASSES_VARIANTE: Record<Variante, string> = {
 };
 
 export function classesBotao(variante: Variante = "primario", extra = ""): string {
-  return `inline-flex min-h-11 items-center justify-center gap-2 rounded-md border px-4 py-2 text-base font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50 lg:min-h-10 ${CLASSES_VARIANTE[variante]} ${extra}`;
+  return `inline-flex min-h-11 items-center justify-center gap-2 rounded-md border py-2 text-base font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50 lg:min-h-10 ${variante === "discreto" ? "px-0" : "px-4"} ${CLASSES_VARIANTE[variante]} ${extra}`;
 }
 
 export function Botao({

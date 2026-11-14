@@ -137,7 +137,7 @@ export default function PaginaEntrar() {
               {enviando ? "Conferindo…" : "Entrar com o código"}
             </Botao>
           </form>
-          <Botao variante="discreto" className="mt-2 px-0" onClick={() => setEtapa("email")}>
+          <Botao variante="discreto" className="mt-2" onClick={() => setEtapa("email")}>
             Usar outro e-mail ou reenviar
           </Botao>
           <p className="mt-2 text-texto-2">

@@ -77,7 +77,7 @@ export default function Inicio() {
               />
               <Valor rotulo="Recusas registradas" valor={d.recusas.total} />
             </dl>
-            <BotaoLink href="/simulador" variante="discreto" className="mt-2 px-0">
+            <BotaoLink href="/simulador" variante="discreto" className="mt-2">
               Ver todos os cenários
             </BotaoLink>
           </Cartao>
@@ -88,7 +88,7 @@ export default function Inicio() {
             <Cartao titulo="Próximo passo">
               <p className="font-medium">{proximo.titulo}</p>
               <p className="mt-1 text-texto-2">{proximo.oQueFazer[0]}</p>
-              <BotaoLink href="/diagnostico" variante="discreto" className="mt-2 px-0">
+              <BotaoLink href="/diagnostico" variante="discreto" className="mt-2">
                 Ver o diagnóstico completo
               </BotaoLink>
             </Cartao>

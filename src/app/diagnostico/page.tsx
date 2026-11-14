@@ -31,7 +31,7 @@ export default function PaginaDiagnostico() {
       {d.recusas.total > 0 && (
         <Cartao titulo="O que dizem as recusas">
           <p className="">{d.recusas.frase}</p>
-          <BotaoLink href="/situacao/recusas" variante="discreto" className="mt-1 px-0">
+          <BotaoLink href="/situacao/recusas" variante="discreto" className="mt-1">
             Ver todas as recusas
           </BotaoLink>
         </Cartao>
