@@ -74,3 +74,12 @@ test("sem Supabase configurado, a família funciona em modo só neste aparelho",
   await page.goto("/familia");
   await expect(page.getByText("Modo só neste aparelho")).toBeVisible();
 });
+
+test("sem chave do Gemini, a IA fica escondida e o app funciona", async ({ page, request }) => {
+  const status = await (await request.get("/api/ia/status")).json();
+  expect(status.disponivel).toBe(false);
+  await page.goto("/imoveis");
+  await page.getByRole("button", { name: "+ Adicionar imóvel" }).click();
+  await expect(page.getByRole("button", { name: "Preencher a partir do texto" })).toBeVisible();
+  await expect(page.getByRole("button", { name: /Preencher com IA/ })).toHaveCount(0);
+});
