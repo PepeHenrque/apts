@@ -33,6 +33,23 @@ test("cadastrar pessoa → ver diagnóstico → ver cenário no simulador", asyn
   await expect(page.getByTestId("cenario")).toHaveCount(1);
   await expect(page.getByTestId("preco-maximo")).toContainText("R$");
 
+  await page.goto("/imoveis");
+  await page.getByRole("button", { name: "+ Adicionar imóvel" }).click();
+  await page.getByLabel("Cole aqui o texto do anúncio").fill("Apto 2 quartos, 45m², R$ 90.000");
+  await page.getByRole("button", { name: "Preencher a partir do texto" }).click();
+  await page.getByLabel("Nome do imóvel").fill("Apto barato");
+  await page.getByRole("button", { name: "Salvar imóvel" }).click();
+  await expect(page.getByRole("heading", { name: "Apto barato" })).toBeVisible();
+  await expect(page.getByTestId("cor-orcamento")).toContainText("Cabe no orçamento");
+
+  await page.getByRole("button", { name: "+ Adicionar imóvel" }).click();
+  await page.getByLabel("Nome do imóvel").fill("Casa cara");
+  await page.getByLabel("Preço", { exact: true }).fill("900000");
+  await page.getByRole("button", { name: "Salvar imóvel" }).click();
+  await expect(page.getByTestId("cor-orcamento")).toHaveCount(2);
+  await expect(page.getByText("Não cabe no orçamento")).toBeVisible();
+
   await page.goto("/situacao/historico");
   await expect(page.getByText("Adicionou Ana")).toBeVisible();
+  await expect(page.getByText('Salvou o imóvel "Apto barato"')).toBeVisible();
 });
