@@ -3,7 +3,7 @@
 > Atualize este arquivo ao fim de cada fase. Ele deve bastar para qualquer pessoa ou IA continuar o
 > trabalho sem o histórico do chat. Pedido completo: `docs/PROMPT-ORIGINAL.md`.
 
-Última atualização: 14/11/2026 — Fase 7 (código) concluída.
+Última atualização: 14/11/2026 — Fase 8 concluída; todas as fases com código pronto.
 
 ## Ordem de execução combinada com o dono (14/11/2026)
 
@@ -20,7 +20,7 @@ depende de contas externas:
 | 6     | 3    | Supabase + login + família + RLS (F9) — código pronto + passo a passo        | Código pronto; aguarda o dono (docs/SUPABASE.md) |
 | 7     | 6    | Gemini (F7) — código pronto + passo a passo da chave                         | Não iniciada                                     |
 | 8     | 7    | Deploy Vercel + revisão geral — passo a passo                                | Não iniciada                                     |
-| 9     | 8    | Executável Windows (Tauri) gerado no GitHub Actions e publicado numa Release | Não iniciada                                     |
+| 9     | 8    | Executável Windows (Tauri) gerado no GitHub Actions e publicado numa Release | Concluída                                        |
 
 Regras combinadas: se o CI falhar, investigar e corrigir; valores do MCMV em dúvida ficam
 configuráveis e marcados "A CONFIRMAR"; **nunca** colocar atribuição de IA em commits/PRs/código.
@@ -168,6 +168,23 @@ configuráveis e marcados "A CONFIRMAR"; **nunca** colocar atribuição de IA em
   (`e2e/acessibilidade.spec.ts`), além de rótulos em todos os campos, foco visível, alvos de toque
   ≥ 48 px, fonte base 18 px, cor nunca como única informação.
 
+## Fase 8 — App de Windows (Tauri)
+
+- `src-tauri/`: projeto Tauri 2 mínimo (janela que abre o site estático `out/`, sem comandos
+  nativos, permissões `core:default`), instalador NSIS em português, só para o usuário atual.
+  Ícones gerados no CI a partir de `public/icones/icone-512.png` (não versionados).
+- Site estático: `EXPORTAR_ESTATICO=1` (`output: "export"`, `trailingSlash: true`) +
+  `NEXT_PUBLIC_DESKTOP=1` (geocodificação direto no Nominatim, sem service worker, sem botão
+  instalar PWA). As rotas `src/app/api` são removidas antes do build estático.
+- CI: job "Site estático do app de Windows" confere a exportação em todo PR.
+- `.github/workflows/windows.yml` (runner `windows-latest`): Node + Rust + `tauri-action`, publica
+  `apts_<versão>_x64-setup.exe` na Release `v<versão>` (versão vem do `package.json`). Dispara
+  manualmente (Actions → App Windows → Run workflow) ou por tag `v*`.
+- Login no app de Windows: pelo **código** do e-mail (o link mágico abriria no navegador).
+  Variáveis opcionais do repositório: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`,
+  `NEXT_PUBLIC_URL_API` (rotas de IA da Vercel, com CORS liberado para as origens do Tauri).
+- O instalador não é assinado → o SmartScreen avisa (instruções no README e na Release).
+
 ## Decisões tomadas
 
 - **Juros nominais ÷ 12** para a taxa mensal (como a Caixa divulga).
@@ -181,10 +198,19 @@ configuráveis e marcados "A CONFIRMAR"; **nunca** colocar atribuição de IA em
 - Dados da família = 1 documento JSON por família (simples; o formato é validado pelo Zod no app). Concorrência: versão otimista; em conflito, vale a versão do banco e o usuário é avisado.
 - Convites não enviam e-mail próprio (exigiria service key/SMTP): a pessoa é avisada pelo WhatsApp e entra com o e-mail convidado.
 
-## Próximos passos (Fase 8 — executável Windows com Tauri)
+## Próximos passos (dependem do dono)
 
-1. Branch `feat/f8-app-windows`.
-2. `src-tauri/` mínimo (Tauri 2) carregando o site estático (`EXPORTAR_ESTATICO=1`, sem rotas de API).
-3. Workflow `.github/workflows/windows.yml` (runner Windows) gera o instalador `.exe` e publica
-   numa Release do GitHub quando uma tag `v*` é criada (ou manualmente).
-4. README: como baixar e o aviso do Windows por não ser assinado.
+1. Publicar na Vercel — `docs/VERCEL.md`.
+2. (Opcional) Supabase para login e dados da família — `docs/SUPABASE.md`.
+3. (Opcional) Chave do Gemini — `docs/GEMINI.md`.
+4. Conferir com a Caixa/correspondente os valores marcados "A CONFIRMAR" em
+   `src/config/regras-mcmv.ts` (juros por faixa, teto F1/F2 na cidade, cota de financiamento,
+   seguro MIP, subsídio) e ajustar lá.
+
+## Ideias para depois
+
+- Tabela de MIP real da seguradora e seguro DFI (danos ao imóvel) no cálculo da parcela.
+- Teto do imóvel por cidade (lista de municípios) em vez de um valor único.
+- Notificações no PWA (ex.: quando o score já deve ter atualizado).
+- Assinatura digital do instalador de Windows (remove o aviso do SmartScreen; certificado pago).
+- CSP com nonce.

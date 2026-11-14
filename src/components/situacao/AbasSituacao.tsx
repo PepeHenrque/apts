@@ -12,7 +12,7 @@ const ABAS = [
 ];
 
 export function AbasSituacao() {
-  const caminho = usePathname();
+  const caminho = usePathname().replace(/(.)\/$/, "$1");
   return (
     <nav aria-label="Partes da situação" className="mb-5 -mx-4 overflow-x-auto px-4">
       <ul className="flex gap-2">

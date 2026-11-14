@@ -8,7 +8,10 @@ import type { NextConfig } from "next";
 const exportarEstatico = process.env.EXPORTAR_ESTATICO === "1";
 
 const nextConfig: NextConfig = {
-  ...(exportarEstatico ? { output: "export" as const, images: { unoptimized: true } } : {}),
+  // trailingSlash: cada tela vira pasta/index.html, que o app de Windows abre direto.
+  ...(exportarEstatico
+    ? { output: "export" as const, trailingSlash: true, images: { unoptimized: true } }
+    : {}),
   turbopack: {
     rules: {
       "*.css": {

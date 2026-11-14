@@ -27,6 +27,25 @@ compradores funciona** e a organizar a busca de imóveis dentro do orçamento.
 - **IA** (opcional, Gemini) — preencher anúncio colado e explicar a situação em linguagem simples.
 - **Instalável** no celular e no Windows (PWA), e versão desktop para Windows (veja abaixo).
 
+## App para Windows
+
+1. Abra **https://github.com/PepeHenrque/apts/releases/latest**.
+2. Em **Assets**, baixe o arquivo que termina em **`_x64-setup.exe`**.
+3. Abra o arquivo baixado. **O Windows vai mostrar um aviso** ("O Windows protegeu o computador"
+   / SmartScreen), porque o app **não é assinado digitalmente** (o certificado é pago). Clique em
+   **Mais informações** → **Executar assim mesmo**.
+4. Siga o instalador. O app aparece no menu Iniciar como **apts**.
+
+O instalador é gerado automaticamente pelo GitHub Actions (workflow "App Windows") — nada é
+compilado no seu computador. Para gerar uma versão nova: aumente a `version` no `package.json` e
+rode **Actions → App Windows → Run workflow** (ou crie uma tag `vX.Y.Z`).
+
+Os dados do app de Windows ficam no computador. Para usar os dados da família (login), cadastre
+em **Settings → Secrets and variables → Actions → Variables** do GitHub as variáveis
+`NEXT_PUBLIC_SUPABASE_URL` e `NEXT_PUBLIC_SUPABASE_ANON_KEY` (e, para a IA, `NEXT_PUBLIC_URL_API`
+com o endereço da Vercel) e gere uma versão nova. No app de Windows, entre com o **código** que
+chega por e-mail. Alternativa sem instalar nada: abra o site no Edge/Chrome e use **Instalar app**.
+
 ## Colocar no ar / ligar os serviços
 
 | O quê                         | Passo a passo                          | Obrigatório?              |
