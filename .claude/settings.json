@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm *)",
+      "Bash(npx *)",
+      "Bash(git *)",
+      "Bash(gh *)",
+      "Bash(/c/Users/Pedro/AppData/Local/Programs/gh/bin/gh.exe *)",
+      "PowerShell(npm *)",
+      "PowerShell(npx *)",
+      "PowerShell(git *)",
+      "PowerShell(gh *)"
+    ]
+  },
+  "attribution": {
+    "commit": "",
+    "pr": "",
+    "sessionUrl": false
+  },
+  "includeCoAuthoredBy": false
+}
