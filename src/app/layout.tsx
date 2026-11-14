@@ -2,10 +2,13 @@ import type { Metadata, Viewport } from "next";
 import { AvisoEstimativa } from "@/components/AvisoEstimativa";
 import { AvisosGlobais } from "@/components/AvisosGlobais";
 import { NavegacaoInferior } from "@/components/NavegacaoInferior";
+import { RegistrarServiceWorker } from "@/components/Pwa";
 import "./globals.css";
 
 export const metadata: Metadata = {
   title: { default: "apts — nossa casa própria", template: "%s — apts" },
+  applicationName: "apts",
+  appleWebApp: { capable: true, title: "apts", statusBarStyle: "default" },
   description:
     "Descubra quanto a família consegue financiar pela Caixa (Minha Casa Minha Vida), o que está bloqueando a aprovação e organize a busca de imóveis.",
 };
@@ -30,6 +33,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           <AvisosGlobais />
           {children}
         </main>
+        <RegistrarServiceWorker />
         <div className="fixed inset-x-0 bottom-0 z-[1100]">
           <AvisoEstimativa />
           <NavegacaoInferior />
