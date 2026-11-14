@@ -344,3 +344,12 @@ export function pessoaEmBranco(): Pessoa {
     nome: "",
   };
 }
+
+/** Rascunho de imóvel para o formulário (título/preço vazios: validados só ao salvar). */
+export function imovelEmBranco(): Imovel {
+  return {
+    ...esquemaImovel.parse({ id: novoId(), titulo: "rascunho", preco: 1 }),
+    titulo: "",
+    preco: 0,
+  };
+}
