@@ -1,6 +1,6 @@
 {
-  "atualizadoEm": "2026-11-15T16:19:12.227Z",
-  "sucesso": false,
+  "atualizadoEm": "2026-11-16T19:41:45.173Z",
+  "sucesso": true,
   "ufs": [
     "SP"
   ],
@@ -9,12 +9,9 @@
       "total": 3316,
       "novos": 0,
       "removidos": 0,
-      "comLocalizacao": 0,
-      "erro": "A Caixa respondeu 403 para SP"
+      "comLocalizacao": 600
     }
   },
-  "erros": [
-    "A Caixa respondeu 403 para SP"
-  ],
-  "pedidosDeLocalizacao": 0
+  "erros": [],
+  "pedidosDeLocalizacao": 300
 }
