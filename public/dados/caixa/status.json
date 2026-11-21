@@ -1,5 +1,5 @@
 {
-  "atualizadoEm": "2026-11-20T17:50:58.469Z",
+  "atualizadoEm": "2026-11-21T16:50:45.970Z",
   "sucesso": true,
   "ufs": [
     "SP"
@@ -7,9 +7,9 @@
   "porUf": {
     "SP": {
       "total": 3657,
-      "novos": 140,
-      "removidos": 21,
-      "comLocalizacao": 1672
+      "novos": 0,
+      "removidos": 0,
+      "comLocalizacao": 2116
     }
   },
   "erros": [],
