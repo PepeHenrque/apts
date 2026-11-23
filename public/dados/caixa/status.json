@@ -1,6 +1,6 @@
 {
-  "atualizadoEm": "2026-11-22T17:08:19.304Z",
-  "sucesso": false,
+  "atualizadoEm": "2026-11-23T21:21:37.800Z",
+  "sucesso": true,
   "ufs": [
     "SP"
   ],
@@ -9,12 +9,9 @@
       "total": 3657,
       "novos": 0,
       "removidos": 0,
-      "comLocalizacao": 0,
-      "erro": "The operation was aborted due to timeout"
+      "comLocalizacao": 2558
     }
   },
-  "erros": [
-    "The operation was aborted due to timeout"
-  ],
-  "pedidosDeLocalizacao": 0
+  "erros": [],
+  "pedidosDeLocalizacao": 300
 }
